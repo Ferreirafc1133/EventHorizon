@@ -1,0 +1,90 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    font-family: 'Arial', sans-serif;
+    color: white
+}
+
+#background-image-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; 
+}
+
+#background-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+}
+
+.overlay-container {
+    position: relative;
+    width: 100%;
+    min-height: 100%;
+    background-color: rgba(0, 0, 0, 0); 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 50px;
+}
+
+.search-container {
+    padding: 20px;
+    border-radius: 5px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0); 
+    z-index: 2; 
+}
+
+#results-container {
+    width: 80%;
+    max-width: 800px; 
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    box-sizing: border-box;
+    background-color: rgba(0, 0, 0, 0.5); /* o cualquier otro estilo de fondo que prefieras */
+    color: rgb(204, 0, 0);
+}
+
+#pagination {
+    display: flex;
+    align-items: center;
+}
+
+#pagination button {
+    margin-right: 5px;
+}
+
+
+#logoutButton {
+    padding: 5px 10px;
+    background-color: #dc3545;
+    color: rgb(255, 237, 237);
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 12px;
+    height: 40px;
+    width: 20%;
+}
+
+.navbar-custom {
+    width: 100%;
+}
+.navbar-light {
+    background-color: #ffffff; 
+    box-shadow: 0 2px 4px rgba(0,0,0,.1); 
+}
