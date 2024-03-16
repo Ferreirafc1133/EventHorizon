@@ -22,16 +22,11 @@ const registerUser = async (req: Request, res: Response) => {
             return res.status(ResponseStatus.BAD_REQUEST).json({ msg: 'El usuario ya existe' });
         }
 
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
-
-        console.log(`Password hasheada para ${username}: ${hashedPassword}`);
-
         user = new User({
             fullname,
             username,
             email,
-            password: hashedPassword
+            password 
         });
 
         await user.save();
@@ -44,7 +39,8 @@ const registerUser = async (req: Request, res: Response) => {
     }
 };
 
-/*
+
+
 const loginUser = async (req: Request, res: Response) => {
     try {
         const { username, password } = req.body;
@@ -77,9 +73,9 @@ const loginUser = async (req: Request, res: Response) => {
         res.status(500).send('Error del servidor');
     }
 };
-*/
 
 
+/*
 //temporal:
 const loginUser = async (req: Request, res: Response) => {
     try {
@@ -105,7 +101,7 @@ const loginUser = async (req: Request, res: Response) => {
         res.status(500).send('Error del servidor');
     }
 };
-
+*/
 
 
 const logoutUser = (req: Request, res: Response) => {
@@ -120,10 +116,59 @@ const logoutUser = (req: Request, res: Response) => {
     });
 };
 
+const verPerfil = async (req: Request, res: Response) => {
+    try {
+        const user = await User.findById(req.session.userId);
+        const { password, ...userWithoutPassword } = user.toObject();
+        res.status(ResponseStatus.OK).json(userWithoutPassword);
+    } catch (err) {
+        console.error('Error al obtener el perfil del usuario:', err);
+        res.status(ResponseStatus.INTERNAL_SERVER_ERROR).send('Error al obtener el perfil del usuario');
+    }
+};
+
+
+const editarPerfil = async (req: Request, res: Response) => {
+    try {
+        const updates = {
+            fullname: req.body.fullname,
+            username: req.body.username,
+            email: req.body.email,
+            role: req.body.role
+        };
+
+        const updatedUser = await User.findByIdAndUpdate(req.session.userId, updates, { new: true });
+        const { password, ...updatedUserInfo } = updatedUser.toObject();
+        res.status(ResponseStatus.OK).json(updatedUserInfo);
+    } catch (err) {
+        console.error('Error al editar el perfil del usuario:', err);
+        res.status(ResponseStatus.INTERNAL_SERVER_ERROR).send('Error al editar el perfil del usuario');
+    }
+};
+
+
+const eliminarUsuario = async (req: Request, res: Response) => { //borra por ahora el usuario logeado pero se puede adaptar para borrar cualquier usuario. se puede hacer borrado logico unicamente si agregamos status
+    try {
+        await User.findByIdAndDelete(req.session.userId);
+        req.session.destroy(() => {
+            res.status(ResponseStatus.OK).send('Usuario eliminado exitosamente');
+        });
+    } catch (err) {
+        console.error('Error al eliminar el usuario:', err);
+        res.status(ResponseStatus.INTERNAL_SERVER_ERROR).send('Error al eliminar el usuario');
+    }
+};
+
+
+
+
 export {
     loginUser,
     registerUser,
-    logoutUser
+    logoutUser,
+    verPerfil,
+    editarPerfil,
+    eliminarUsuario
 };
 
 

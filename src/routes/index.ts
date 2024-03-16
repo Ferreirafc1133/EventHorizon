@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import authRoutes from './authRut';
 import { isAuthenticated } from '../middlewares/authMid';
+import eventRoutes from './eventRut'; 
 
 declare module 'express-session' {
   interface SessionData {
@@ -12,6 +13,7 @@ declare module 'express-session' {
 const router = express.Router();
 
 router.use(authRoutes);
+router.use(eventRoutes);
 
 
 router.get('/', (req: Request, res: Response) => {
