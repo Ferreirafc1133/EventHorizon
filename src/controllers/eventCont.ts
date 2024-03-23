@@ -26,8 +26,13 @@ const crearEvento = async (req: Request, res: Response) => {
 
 const listarEventos = async (req: Request, res: Response) => {
     try {
-        const eventos = await Evento.find({});
-        res.json(eventos);
+        const eventos = await Evento.find({}).lean();
+        //console.log(eventos);
+        res.render('events', { 
+            title: "Eventos",
+            showNavbar: true,
+            eventos });
+        //res.json(eventos);
     } catch (err) {
         console.error('Error al listar los eventos:', err);
         res.status(ResponseStatus.INTERNAL_SERVER_ERROR).send('Error al listar los eventos');

@@ -1,0 +1,21 @@
+<h1>Listado de Eventos</h1>
+    <ul>
+        {{#each eventos}}
+        <li>
+            <h2>{{titulo}}</h2>
+            <p><strong>Descripción:</strong> {{descripcion}}</p>
+            <p><strong>Fecha de inicio:</strong> {{fechaInicio}}</p>
+            <p><strong>Fecha de fin:</strong> {{fechaFin}}</p>
+            <p><strong>Organizador:</strong> {{organizador}}</p>
+            {{#if colaboradores.length}}
+            <p><strong>Colaboradores:</strong>
+                <ul>
+                    {{#each colaboradores}}
+                    <li>{{this}}</li>
+                    {{/each}}
+                </ul>
+            </p>
+            {{/if}}
+        </li>
+        {{/each}}
+    </ul>
