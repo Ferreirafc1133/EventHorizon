@@ -2,6 +2,8 @@ import bcrypt from 'bcryptjs';
 import { Request, Response } from 'express';
 import User from '../models/userMod';
 import { ResponseStatus } from '../utils/response-status';
+import jwt from 'jsonwebtoken';
+
 
 interface UserInterface {
     fullname: string;
@@ -40,33 +42,35 @@ const registerUser = async (req: Request, res: Response) => {
 };
 
 
-
 const loginUser = async (req: Request, res: Response) => {
     try {
         const { username, password } = req.body;
 
-        console.log(`Inicio de sesión: ${username}, Password proporcionada: ${password}`);
+        console.log(`Inicio de sesión: ${username}`);
 
         let user = await User.findOne({ username });
         if (!user) {
             console.log(`El usuario ${username} no existe.`);
-            return res.status(400).render('login', { message: 'El usuario no existe' });
+            return res.status(400).json({ message: 'El usuario no existe' });
         }
 
         console.log(`Usuario ${username} encontrado. Comparando contraseña...`);
 
         const isMatch = await bcrypt.compare(password, user.password);
 
-        console.log(`Resultado de comparación para ${username}: ${isMatch}`);
-
         if (!isMatch) {
             console.log(`Contraseña incorrecta para el usuario: ${username}`);
-            return res.status(400).render('login', { message: 'Contraseña incorrecta' });
+            return res.status(400).json({ message: 'Contraseña incorrecta' });
         }
 
-        req.session.userId = user._id;
-        console.log(`Usuario ${username} autenticado exitosamente.`);
+        const token = jwt.sign(
+            { userId: user._id },
+            process.env.JWT_SECRET,
+            { expiresIn: '1h' } 
+        );
 
+        console.log(`Usuario ${username} autenticado exitosamente con token.`);
+        res.cookie('token', token, { httpOnly: true, secure: true });
         res.redirect('/');
     } catch (error) {
         console.error('Error durante el inicio de sesión:', error);
@@ -105,31 +109,45 @@ const loginUser = async (req: Request, res: Response) => {
 
 
 const logoutUser = (req: Request, res: Response) => {
-    req.session.destroy((err: any) => {
-        if (err) {
-            console.error('Error al cerrar la sesión:', err);
-            res.status(ResponseStatus.INTERNAL_SERVER_ERROR).send('Error al cerrar la sesión');
-        } else {
-            console.log('Sesión cerrada exitosamente');
-            res.redirect('/login');
-        }
-    });
+    console.log('Indicación para cerrar sesión enviada al cliente.');
+    res.send(`
+        <script>
+            // Asume que el token está en localStorage, ajusta según sea necesario
+            localStorage.removeItem('token');
+            sessionStorage.removeItem('token'); // Si también pudiera estar en sessionStorage
+            // Informa al usuario que la sesión se ha cerrado y redirige
+            alert('Sesión cerrada exitosamente.');
+            window.location.href = '/login';
+        </script>
+    `);
 };
 
 const verPerfil = async (req: Request, res: Response) => {
     try {
-        const user = await User.findById(req.session.userId);
+
+        const user = await User.findById(req.usuario.userId);
+
+        if (!user) {
+            return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+        }
+
         const { password, ...userWithoutPassword } = user.toObject();
-        res.status(ResponseStatus.OK).json(userWithoutPassword);
+        res.status(200).json(userWithoutPassword);
     } catch (err) {
         console.error('Error al obtener el perfil del usuario:', err);
-        res.status(ResponseStatus.INTERNAL_SERVER_ERROR).send('Error al obtener el perfil del usuario');
+        res.status(500).send('Error al obtener el perfil del usuario');
     }
 };
 
 
 const editarPerfil = async (req: Request, res: Response) => {
     try {
+        const userId = req.usuario?.userId;
+
+        if (!userId) {
+            return res.status(400).json({ mensaje: 'No se pudo obtener el ID del usuario del token' });
+        }
+
         const updates = {
             fullname: req.body.fullname,
             username: req.body.username,
@@ -137,25 +155,35 @@ const editarPerfil = async (req: Request, res: Response) => {
             role: req.body.role
         };
 
-        const updatedUser = await User.findByIdAndUpdate(req.session.userId, updates, { new: true });
+        const updatedUser = await User.findByIdAndUpdate(userId, updates, { new: true });
+        
+        if (!updatedUser) {
+            return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+        }
+
         const { password, ...updatedUserInfo } = updatedUser.toObject();
-        res.status(ResponseStatus.OK).json(updatedUserInfo);
+        res.status(200).json(updatedUserInfo);
     } catch (err) {
         console.error('Error al editar el perfil del usuario:', err);
-        res.status(ResponseStatus.INTERNAL_SERVER_ERROR).send('Error al editar el perfil del usuario');
+        res.status(500).send('Error al editar el perfil del usuario');
     }
 };
 
 
-const eliminarUsuario = async (req: Request, res: Response) => { //borra por ahora el usuario logeado pero se puede adaptar para borrar cualquier usuario. se puede hacer borrado logico unicamente si agregamos status
+const eliminarUsuario = async (req: Request, res: Response) => {
     try {
-        await User.findByIdAndDelete(req.session.userId);
-        req.session.destroy(() => {
-            res.status(ResponseStatus.OK).send('Usuario eliminado exitosamente');
-        });
+        const userId = req.usuario?.userId;
+
+        if (!userId) {
+            return res.status(400).json({ mensaje: 'ID del usuario no disponible. Operación no permitida.' });
+        }
+
+        await User.findByIdAndDelete(userId);
+
+        res.status(200).send('Usuario eliminado exitosamente');
     } catch (err) {
         console.error('Error al eliminar el usuario:', err);
-        res.status(ResponseStatus.INTERNAL_SERVER_ERROR).send('Error al eliminar el usuario');
+        res.status(500).send('Error al eliminar el usuario');
     }
 };
 

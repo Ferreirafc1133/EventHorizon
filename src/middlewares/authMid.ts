@@ -1,16 +1,27 @@
 import { Request, Response, NextFunction } from 'express';
-import session from 'express-session';
+import jwt from 'jsonwebtoken';
 
-declare module 'express-serve-static-core' {
+declare global {
+  namespace Express {
     interface Request {
-        session: session.Session & Partial<session.SessionData> & { userId?: string };
+      usuario?: any; 
     }
+  }
 }
 
-export function isAuthenticated(req: Request, res: Response, next: NextFunction): void {
-    if (req.session && req.session.userId) {
-        next();
-    } else {
-        res.redirect('/login');
+export const verificarToken = (req: Request, res: Response, next: NextFunction): void => {
+    const token = req.headers.authorization?.split(' ')[1]; 
+
+    if (!token) {
+        res.status(403).json({ mensaje: 'Se requiere token para autenticación' });
+        return;
     }
-}
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.usuario = decoded;
+        next();
+    } catch (error) {
+        res.status(401).json({ mensaje: 'Token no válido' });
+    }
+};
