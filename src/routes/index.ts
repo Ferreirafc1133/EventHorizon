@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import authRoutes from './authRut';
-import { isAuthenticated } from '../middlewares/authMid';
+import { verificarToken } from '../middlewares/authMid';
 import eventRoutes from './eventRut'; 
 
 declare module 'express-session' {

@@ -1,6 +1,6 @@
 import express from 'express';
 import { loginUser, registerUser, logoutUser, editarPerfil, eliminarUsuario, verPerfil } from '../controllers/authCont'; 
-import { isAuthenticated } from '../middlewares/authMid'; 
+import { verificarToken  } from '../middlewares/authMid'; 
 
 
 const router = express.Router();
@@ -9,13 +9,13 @@ router.post('/register', registerUser);
 
 router.post('/login', loginUser);
 
-router.get('/logout', isAuthenticated, logoutUser);
+router.get('/logout', verificarToken, logoutUser);
 
-router.get('/me', isAuthenticated, verPerfil);
+router.get('/me', verificarToken, verPerfil);
 
-router.put('/edit', isAuthenticated, editarPerfil);
+router.put('/edit', verificarToken, editarPerfil);
 
-router.get('/delete', isAuthenticated, eliminarUsuario);
+router.get('/delete', verificarToken, eliminarUsuario);
 
 
 
