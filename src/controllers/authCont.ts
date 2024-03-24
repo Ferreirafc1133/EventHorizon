@@ -64,9 +64,9 @@ const loginUser = async (req: Request, res: Response) => {
         }
 
         const token = jwt.sign(
-            { userId: user._id },
+            { userId: user._id, username: user.username }, 
             process.env.JWT_SECRET,
-            { expiresIn: '1h' } 
+            { expiresIn: '1h' }
         );
 
         console.log(`Usuario ${username} autenticado exitosamente con token.`);
@@ -112,10 +112,8 @@ const logoutUser = (req: Request, res: Response) => {
     console.log('Indicación para cerrar sesión enviada al cliente.');
     res.send(`
         <script>
-            // Asume que el token está en localStorage, ajusta según sea necesario
             localStorage.removeItem('token');
             sessionStorage.removeItem('token'); // Si también pudiera estar en sessionStorage
-            // Informa al usuario que la sesión se ha cerrado y redirige
             alert('Sesión cerrada exitosamente.');
             window.location.href = '/login';
         </script>
