@@ -1,7 +1,8 @@
 import express, { Request, Response } from 'express';
 import authRoutes from './authRut';
-import { verificarToken } from '../middlewares/authMid';
+import { verificarToken, establecerContextoAutenticacion } from '../middlewares/authMid';
 import eventRoutes from './eventRut'; 
+import cookieParser  from 'cookie-parser';
 
 declare module 'express-session' {
   interface SessionData {
@@ -11,18 +12,18 @@ declare module 'express-session' {
 }
 
 const router = express.Router();
-
+router.use(cookieParser());
+router.use(establecerContextoAutenticacion);
 router.use(authRoutes);
 router.use(eventRoutes);
-
 
 router.get('/', (req: Request, res: Response) => {
   res.render('home', {
       title: 'Eventos en línea',
       customCss: '/public/styles/home.css',
       showNavbar: true,
-      userLoggedIn: req.session.userId !== undefined,
-      username: req.session.username
+      userLoggedIn: res.locals.userLoggedIn,
+      username: res.locals.username || 'Invitado'
   });
 });
 
@@ -40,6 +41,14 @@ router.get('/login', (req: Request, res: Response) => {
       showNavbar: false 
   });
 });
+
+router.get('/eventos', (req: Request, res: Response) => {
+  res.render('events', {
+      title: 'Página de Eventos',
+      showNavbar: true 
+  });
+});
+
 
 
 export default router;
