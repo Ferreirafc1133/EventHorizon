@@ -4,9 +4,11 @@
       "outDir": "./dist",
       "noImplicitAny": true,
       "module": "NodeNext",
-      "esModuleInterop": true
+      "esModuleInterop": true,
+      "baseUrl": "src",
+      "resolveJsonModule": true
     },
     "include": [
       "./src/**/*.ts"
-    ]
+    ],
   }

@@ -6,6 +6,10 @@ import path from 'path';
 import { engine } from 'express-handlebars';
 import routes from './routes'; 
 dotenv.config();
+import swaggerJsDoc from 'swagger-jsdoc';
+import swaggerUI from 'swagger-ui-express';
+import swaggerConfig from './../swagger.config.json';
+const swaggerDocs = swaggerJsDoc(swaggerConfig);
 
 const app: Application = express();
 
@@ -34,6 +38,7 @@ app.set('views', './src/views');
 //app.use('/public', express.static(path.join(__dirname, 'public')));
 app.use('/public', express.static(path.join(__dirname, '../public')));
 
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocs));
 
 
 app.use(express.json());
