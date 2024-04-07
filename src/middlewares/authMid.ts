@@ -65,7 +65,8 @@ export const esAdmin = async (req: Request, res: Response, next: NextFunction) =
         if (usuario.role !== 'admin') {
             return res.status(403).json({ mensaje: "Acceso denegado. Se requiere rol de admin." });
         }
-
+        
+        console.log("Verificación exitosa: El usuario tiene rol de admin.");
         next();
     } catch (error) {
         console.error(error);

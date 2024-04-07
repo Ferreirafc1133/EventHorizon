@@ -247,7 +247,7 @@ router.delete('/eventos/:id', verificarToken, esAdmin, eliminarEvento);
  *       description: Evento no encontrado.
  *   description: Permite a los usuarios inscribirse o confirmar asistencia a un evento específico. Este endpoint puede requerir que el usuario esté autenticado.
  */
-router.post('/eventos/:id/asistente', asistirEvento);
+router.post('/eventos/:id/asistente', verificarToken, asistirEvento);
 
 /**
  * @swagger
@@ -285,7 +285,7 @@ router.post('/eventos/:id/asistente', asistirEvento);
  *       description: Evento o usuario no encontrado.
  *   description: Permite a los usuarios autenticados eliminar la inscripción de un usuario a un evento específico, mediante el ID del evento y el ID del usuario.
  */
-router.delete('/eventos/:id/inscripciones', eliminarAsistente);
+router.delete('/eventos/:id/inscripciones', verificarToken, esAdmin, eliminarAsistente);
 
 /**
  * @swagger
