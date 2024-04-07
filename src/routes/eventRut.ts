@@ -1,12 +1,9 @@
 import express from 'express';
 import { crearEvento, listarEventos, inscribirEvento, editarEvento, eliminarEvento, asistirEvento, eliminarAsistente, manejarRegistrosEvento} from '../controllers/eventCont';
 import { verificarToken, esAdmin } from '../middlewares/authMid';
-import swaggerJsDoc from 'swagger-jsdoc';
-import swaggerUI from 'swagger-ui-express';
-import swaggerConfig from './../../swagger.config.json';
+
 
 const router = express.Router();
-const swaggerDocs = swaggerJsDoc(swaggerConfig);
 
 /**
  * @swagger

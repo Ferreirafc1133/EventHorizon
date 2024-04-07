@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import authRoutes from './authRut';
+import adminRoutes from './adminRut';
 import { verificarToken, establecerContextoAutenticacion } from '../middlewares/authMid';
 import eventRoutes from './eventRut'; 
 import cookieParser  from 'cookie-parser';
@@ -16,6 +17,7 @@ router.use(cookieParser());
 router.use(establecerContextoAutenticacion);
 router.use(authRoutes);
 router.use(eventRoutes);
+router.use(adminRoutes);
 
 router.get('/', (req: Request, res: Response) => {
   res.render('home', {

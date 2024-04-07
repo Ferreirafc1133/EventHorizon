@@ -5,6 +5,7 @@ import { ResponseStatus } from '../utils/response-status';
 import jwt from 'jsonwebtoken';
 
 
+
 interface UserInterface {
     fullname: string;
     username: string;
@@ -186,32 +187,30 @@ const eliminarUsuario = async (req: Request, res: Response) => {
 };
 
 
-const cambiarRolUsuario = async (req: Request, res: Response) => {
+const updateProfilePicture = async (req: Request, res: Response) => {
+    if (!req.file) {
+        return res.status(400).json({ mensaje: 'No se proporcionó ningún archivo.' });
+    }
+    const file = req.file as Express.MulterS3.File; 
     try {
-        const { userId, role } = req.body; 
-        if (!userId || !role) {
-            return res.status(400).json({ mensaje: 'Se requiere userId y role' });
-        }
-        const rolesPermitidos = ['user', 'admin', 'otroRol'];
-        if (!rolesPermitidos.includes(role)) {
-            return res.status(400).json({ mensaje: 'Rol no válido' });
-        }
-        const updatedUser = await User.findByIdAndUpdate(
-            userId,
-            { role: role },
-            { new: true, runValidators: true }
-        );
+        const userId = req.usuario?.userId; 
+        const profilePictureUrl = file.location; 
+
+        const updatedUser = await User.findByIdAndUpdate(userId, {
+            profilePicture: profilePictureUrl
+        }, { new: true });
+
         if (!updatedUser) {
             return res.status(404).json({ mensaje: 'Usuario no encontrado' });
         }
 
-        const { password, ...updatedUserInfo } = updatedUser.toObject();
-        res.status(200).json(updatedUserInfo);
+        res.status(200).json({ mensaje: 'Foto de perfil actualizada con éxito.', profilePicture: profilePictureUrl });
     } catch (err) {
-        console.error('Error al cambiar el rol del usuario:', err);
-        res.status(500).send('Error al cambiar el rol del usuario');
+        console.error('Error al actualizar la foto de perfil:', err);
+        res.status(500).send('Error interno del servidor');
     }
 };
+
 
 
 export {
@@ -221,7 +220,7 @@ export {
     verPerfil,
     editarPerfil,
     eliminarUsuario,
-    cambiarRolUsuario
+    updateProfilePicture
 };
 
 
