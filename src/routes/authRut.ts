@@ -1,6 +1,7 @@
 import express from 'express';
-import { loginUser, registerUser, logoutUser, editarPerfil, eliminarUsuario, verPerfil } from '../controllers/authCont'; 
+import { loginUser, registerUser, logoutUser, editarPerfil, eliminarUsuario, verPerfil, updateProfilePicture  } from '../controllers/authCont'; 
 import { verificarToken, esAdmin } from '../middlewares/authMid'; 
+import { uploadS3Middleware } from '../middlewares/userMid';
 import swaggerJsDoc from 'swagger-jsdoc';
 import swaggerUI from 'swagger-ui-express';
 import swaggerConfig from './../../swagger.config.json';
@@ -238,6 +239,7 @@ router.put('/edit', verificarToken, editarPerfil);
  */
 router.delete('/delete', verificarToken, eliminarUsuario);
 
+router.post('/perfil/foto', verificarToken, uploadS3Middleware, updateProfilePicture);
 
 
 export default router;
