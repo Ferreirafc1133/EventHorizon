@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import User from '../models/userMod';
 const cookieParser = require('cookie-parser');
 
 declare global {
@@ -53,3 +54,21 @@ export const establecerContextoAutenticacion = (req: Request, res: Response, nex
 };
 
 
+export const esAdmin = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const usuario = await User.findById(req.usuario.userId);
+
+        if (!usuario) {
+            return res.status(404).json({ mensaje: "Usuario no encontrado." });
+        }
+
+        if (usuario.role !== 'admin') {
+            return res.status(403).json({ mensaje: "Acceso denegado. Se requiere rol de admin." });
+        }
+
+        next();
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ mensaje: "Error al verificar el rol del usuario." });
+    }
+};

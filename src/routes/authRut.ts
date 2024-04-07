@@ -1,6 +1,6 @@
 import express from 'express';
 import { loginUser, registerUser, logoutUser, editarPerfil, eliminarUsuario, verPerfil } from '../controllers/authCont'; 
-import { verificarToken  } from '../middlewares/authMid'; 
+import { verificarToken, esAdmin } from '../middlewares/authMid'; 
 import swaggerJsDoc from 'swagger-jsdoc';
 import swaggerUI from 'swagger-ui-express';
 import swaggerConfig from './../../swagger.config.json';

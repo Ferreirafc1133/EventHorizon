@@ -8,7 +8,6 @@
 <body>
     <h1>Editar Perfil</h1>
     <form action="/users/{{user._id}}" method="POST">
-        <!-- Campos de formulario para editar el perfil -->
         <label for="name">Nombre:</label>
         <input type="text" id="name" name="name" value="{{user.name}}">
         

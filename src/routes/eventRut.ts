@@ -1,6 +1,6 @@
 import express from 'express';
 import { crearEvento, listarEventos, inscribirEvento, editarEvento, eliminarEvento, asistirEvento, eliminarAsistente, manejarRegistrosEvento} from '../controllers/eventCont';
-import { verificarToken } from '../middlewares/authMid';
+import { verificarToken, esAdmin } from '../middlewares/authMid';
 import swaggerJsDoc from 'swagger-jsdoc';
 import swaggerUI from 'swagger-ui-express';
 import swaggerConfig from './../../swagger.config.json';
@@ -213,11 +213,11 @@ router.put('/eventos/:id', verificarToken, editarEvento);
  *       description: Evento no encontrado.
  *   description: Permite a los usuarios autenticados eliminar un evento proporcionando un ID válido. Esta acción es irreversible.
  */
-router.delete('/eventos/:id', verificarToken, eliminarEvento);
+router.delete('/eventos/:id', verificarToken, esAdmin, eliminarEvento);
 
 /**
  * @swagger
- * /eventos/{id}/inscripciones:
+ * /eventos/{id}/asistente:
  *  post:
  *   summary: Inscribirse o confirmar asistencia a un evento
  *   tags: [Eventos]
@@ -247,7 +247,7 @@ router.delete('/eventos/:id', verificarToken, eliminarEvento);
  *       description: Evento no encontrado.
  *   description: Permite a los usuarios inscribirse o confirmar asistencia a un evento específico. Este endpoint puede requerir que el usuario esté autenticado.
  */
-router.post('/eventos/:id/inscripciones', asistirEvento);
+router.post('/eventos/:id/asistente', asistirEvento);
 
 /**
  * @swagger
