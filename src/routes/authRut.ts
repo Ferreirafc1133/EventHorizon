@@ -239,6 +239,48 @@ router.put('/edit', verificarToken, editarPerfil);
  */
 router.delete('/delete', verificarToken, eliminarUsuario);
 
+/**
+ * @swagger
+ * /perfil/foto:
+ *   post:
+ *     summary: Sube la foto de perfil del usuario.
+ *     description: Permite a un usuario subir una nueva foto de perfil, la cual se guarda en AWS S3. Requiere autenticación.
+ *     tags: [Usuarios]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - file
+ *             properties:
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *                 description: Archivo de imagen para subir como foto de perfil.
+ *     responses:
+ *       200:
+ *         description: Foto de perfil subida con éxito. Devuelve la URL de la nueva foto de perfil.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 mensaje:
+ *                   type: string
+ *                   example: Foto de perfil subida con éxito.
+ *                 fileUrl:
+ *                   type: string
+ *                   example: https://example-bucket.s3.amazonaws.com/nombre-del-archivo.jpg
+ *       400:
+ *         description: Error en la solicitud, como falta del archivo.
+ *       401:
+ *         description: No autenticado. Token no proporcionado o inválido.
+ *       403:
+ *         description: No autorizado. El usuario no tiene permisos para realizar esta acción.
+ */
 router.post('/perfil/foto', verificarToken, uploadS3Middleware, updateProfilePicture);
 
 
