@@ -110,15 +110,15 @@ const loginUser = async (req: Request, res: Response) => {
 
 const logoutUser = (req: Request, res: Response) => {
     console.log('Indicación para cerrar sesión enviada al cliente.');
+    res.cookie('token', '', { expires: new Date(0) });
     res.send(`
         <script>
-            localStorage.removeItem('token');
-            sessionStorage.removeItem('token'); // Si también pudiera estar en sessionStorage
             alert('Sesión cerrada exitosamente.');
             window.location.href = '/login';
         </script>
     `);
 };
+
 
 const verPerfil = async (req: Request, res: Response) => {
     try {
@@ -186,6 +186,32 @@ const eliminarUsuario = async (req: Request, res: Response) => {
 };
 
 
+const cambiarRolUsuario = async (req: Request, res: Response) => {
+    try {
+        const { userId, role } = req.body; 
+        if (!userId || !role) {
+            return res.status(400).json({ mensaje: 'Se requiere userId y role' });
+        }
+        const rolesPermitidos = ['user', 'admin', 'otroRol'];
+        if (!rolesPermitidos.includes(role)) {
+            return res.status(400).json({ mensaje: 'Rol no válido' });
+        }
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { role: role },
+            { new: true, runValidators: true }
+        );
+        if (!updatedUser) {
+            return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+        }
+
+        const { password, ...updatedUserInfo } = updatedUser.toObject();
+        res.status(200).json(updatedUserInfo);
+    } catch (err) {
+        console.error('Error al cambiar el rol del usuario:', err);
+        res.status(500).send('Error al cambiar el rol del usuario');
+    }
+};
 
 
 export {
@@ -194,7 +220,8 @@ export {
     logoutUser,
     verPerfil,
     editarPerfil,
-    eliminarUsuario
+    eliminarUsuario,
+    cambiarRolUsuario
 };
 
 

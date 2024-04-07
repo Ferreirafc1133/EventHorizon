@@ -49,6 +49,22 @@ router.get('/eventos', (req: Request, res: Response) => {
   });
 });
 
+router.get('/perfil/editar', verificarToken, (req: Request, res: Response) => { //no sirve aun es un dummy
+  res.render('user_edit', {
+      title: 'Editar Perfil',
+      showNavbar: true,
+      userLoggedIn: res.locals.userLoggedIn,
+      username: res.locals.username 
+  });
+});
+
+router.get('/users', (req: Request, res: Response) => { //no sirve aun es un dummy
+  res.render('users', {
+      title: 'Página de usuarios',
+      showNavbar: true 
+  });
+});
+
 
 
 export default router;
