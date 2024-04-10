@@ -110,6 +110,13 @@ router.get('/eventos', (req: Request, res: Response) => {
   });
 });
 
+router.get('/evento', (req: Request, res: Response) => {
+  res.render('/editar-evento/', {
+      title: 'Editar Evento',
+      showNavbar: true 
+  });
+});
+
 /**
  * @swagger
  * /perfil/editar:
@@ -129,6 +136,15 @@ router.get('/eventos', (req: Request, res: Response) => {
  *       401:
  *         description: No autenticado. Usuario no ha proporcionado un token válido o no está logueado.
  */
+router.get('/perfil', verificarToken, (req: Request, res: Response) => { //no sirve aun es un dummy
+  res.render('profile', {
+      title: 'Perfil',
+      showNavbar: true,
+      userLoggedIn: res.locals.userLoggedIn,
+      username: res.locals.username
+  });
+});
+
 router.get('/perfil/editar', verificarToken, (req: Request, res: Response) => { //no sirve aun es un dummy
   res.render('user_edit', {
       title: 'Editar Perfil',
