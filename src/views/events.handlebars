@@ -1,21 +1,91 @@
-<h1>Listado de Eventos</h1>
-    <ul>
-        {{#each eventos}}
-        <li>
-            <h2>{{titulo}}</h2>
-            <p><strong>Descripción:</strong> {{descripcion}}</p>
-            <p><strong>Fecha de inicio:</strong> {{fechaInicio}}</p>
-            <p><strong>Fecha de fin:</strong> {{fechaFin}}</p>
-            <p><strong>Organizador:</strong> {{organizador}}</p>
-            {{#if colaboradores.length}}
-            <p><strong>Colaboradores:</strong>
-                <ul>
-                    {{#each colaboradores}}
-                    <li>{{this}}</li>
-                    {{/each}}
-                </ul>
-            </p>
-            {{/if}}
-        </li>
-        {{/each}}
-    </ul>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listado de Eventos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f7f7;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .container h1 {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .event-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .event-item {
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .event-item h2 {
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        .event-item p {
+            margin: 5px 0;
+        }
+        .edit-button {
+            display: block;
+            width: 100%;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+        }
+        .edit-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Listado de Eventos</h1>
+        <ul class="event-list">
+            {{#each eventos}}
+            <li class="event-item">
+                <h2>{{titulo}}</h2>
+                <p><strong>Descripción:</strong> {{descripcion}}</p>
+                <p><strong>Fecha de inicio:</strong> {{fechaInicio}}</p>
+                <p><strong>Fecha de fin:</strong> {{fechaFin}}</p>
+                <p><strong>Organizador:</strong> {{organizador}}</p>
+                {{#if colaboradores.length}}
+                <p><strong>Colaboradores:</strong>
+                    <ul>
+                        {{#each colaboradores}}
+                        <li>{{this}}</li>
+                        {{/each}}
+                    </ul>
+                </p>
+                {{/if}}
+                
+
+                {{#if isAdmin}}
+                <a href="/editar-evento/{{id}}" class="edit-button">Editar Evento</a>
+                {{/if}}
+            </li>
+            {{/each}}
+        </ul>
+    </div>
+</body>
+</html>
