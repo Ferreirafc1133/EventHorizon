@@ -61,8 +61,9 @@ router.get('/', (req: Request, res: Response) => {
  */
 router.get('/register', (req: Request, res: Response) => {
   res.render('register', {
-      title: 'Página de Registro',
-      showNavbar: false 
+    title: 'Página de Registro',
+    customCss: '/public/styles/login.css',
+    showNavbar: false 
   });
 });
 
@@ -83,8 +84,9 @@ router.get('/register', (req: Request, res: Response) => {
  */
 router.get('/login', (req: Request, res: Response) => {
   res.render('login', {
-      title: 'Página de Inicio de Sesión',
-      showNavbar: false 
+    title: 'Página de Inicio de Sesión',
+    customCss: '/public/styles/login.css',
+    showNavbar: false 
   });
 });
 
@@ -111,7 +113,7 @@ router.get('/eventos', (req: Request, res: Response) => {
 });
 
 router.get('/evento', (req: Request, res: Response) => {
-  res.render('/editar-evento/', {
+  res.render('event_edit', {
       title: 'Editar Evento',
       showNavbar: true 
   });
