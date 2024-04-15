@@ -287,8 +287,8 @@ router.post('/perfil/foto', verificarToken, uploadS3Middleware, actualizarPP);
 router.get('/auth/google/register', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 router.get('/google/callback', 
-  passport.authenticate('google', { failureRedirect: '/register' }),
-  GoogleRegister
+    passport.authenticate('google', { failureRedirect: '/register' }),
+    GoogleRegister
 );
 
 router.get('/auth/google/login',
