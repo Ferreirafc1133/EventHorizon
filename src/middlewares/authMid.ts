@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import User from '../models/userMod';
 const cookieParser = require('cookie-parser');
 
+
 declare global {
   namespace Express {
     interface Request {
@@ -73,3 +74,4 @@ export const esAdmin = async (req: Request, res: Response, next: NextFunction) =
         res.status(500).json({ mensaje: "Error al verificar el rol del usuario." });
     }
 };
+

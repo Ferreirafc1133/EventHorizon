@@ -1,18 +1,20 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
-interface IUser extends Document {
+export interface IUser extends Document {
   fullname: string;
   username: string;
   email: string;
-  password: string;
-  description: string;
-  profilePicture: string;
-  cvLink: string;
-  interests: string[];
+  password: string | null | undefined;
+  description?: string;
+  profilePicture?: string;
+  cvLink?: string;
+  interests?: string[];
   role: string;
-  comparePassword: (candidatePassword: string) => Promise<boolean>;
+  googleId?: string;
+  comparePassword?: (candidatePassword: string) => Promise<boolean>;
 }
+
 
 const userSchema = new mongoose.Schema<IUser>({
   fullname: {
@@ -31,7 +33,7 @@ const userSchema = new mongoose.Schema<IUser>({
   },
   password: {
     type: String,
-    required: true
+    required: false  
   },
   description: {
     type: String,
@@ -53,19 +55,34 @@ const userSchema = new mongoose.Schema<IUser>({
     type: String,
     required: true,
     default: 'user' 
+  },
+  googleId: { 
+    type: String, 
+    required: false 
   }
 });
 
 userSchema.pre<IUser>('save', async function (next) {
-  if (this.isModified('password')) {
-    const hash = await bcrypt.hash(this.password, 10);
-    this.password = hash;
+  if (this.isModified('password') && this.password && typeof this.password === 'string') {
+    try {
+      const salt = await bcrypt.genSalt(10);
+      this.password = await bcrypt.hash(this.password, salt); 
+      next();
+    } catch (error) {
+      next(error);
+    }
+  } else {
+    next();
   }
-  next();
 });
 
+
 userSchema.methods.comparePassword = async function(candidatePassword: string): Promise<boolean> {
-  return bcrypt.compare(candidatePassword, this.password);
+  if (this.password) {
+    return bcrypt.compare(candidatePassword, this.password);
+  } else {
+    throw new Error("Password is not set for this user");
+  }
 };
 
 const User = mongoose.model<IUser>('User', userSchema);

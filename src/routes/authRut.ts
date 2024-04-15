@@ -1,11 +1,12 @@
 import express from 'express';
-import { loginUser, registerUser, logoutUser, editarPerfil, eliminarUsuario, verPerfil, updateProfilePicture  } from '../controllers/authCont'; 
+import { loginUser, registerUser, logoutUser, editarPerfil, eliminarUsuario, verPerfil, actualizarPP, GoogleRegister} from '../controllers/authCont'; 
 import { verificarToken, esAdmin } from '../middlewares/authMid'; 
 import { uploadS3Middleware } from '../middlewares/userMid';
 import swaggerJsDoc from 'swagger-jsdoc';
 import swaggerUI from 'swagger-ui-express';
 import swaggerConfig from './../../swagger.config.json';
-
+import passport from '../middlewares/passport-config';
+import jwt from 'jsonwebtoken'; 
 const router = express.Router();
 const swaggerDocs = swaggerJsDoc(swaggerConfig);
 
@@ -281,8 +282,25 @@ router.delete('/delete', verificarToken, eliminarUsuario);
  *       403:
  *         description: No autorizado. El usuario no tiene permisos para realizar esta acción.
  */
-router.post('/perfil/foto', verificarToken, uploadS3Middleware, updateProfilePicture);
+router.post('/perfil/foto', verificarToken, uploadS3Middleware, actualizarPP);
+
+router.get('/auth/google/register', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+router.get('/google/callback', 
+  passport.authenticate('google', { failureRedirect: '/register' }),
+  GoogleRegister
+);
+
+router.get('/auth/google/login',
+    passport.authenticate('google', { scope: ['profile', 'email'] })
+);
+
+router.get('/google/callback/login', 
+    passport.authenticate('google', { failureRedirect: '/login' }),
+    GoogleRegister
+);
+
+
 
 
 export default router;
-
