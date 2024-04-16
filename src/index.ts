@@ -18,7 +18,7 @@ const app: Application = express();
 
 app.use(
   session({
-    secret: 'secretKey', 
+    secret: process.env.SECRET_KEY, 
     resave: false,
     saveUninitialized: false,
     cookie: { 
@@ -26,6 +26,20 @@ app.use(
     }, 
   })
 );
+app.use((req, res, next) => {
+  console.log('Sesión actual:', req.session);
+  next();
+});
+app.use((req, res, next) => {
+  if (req.user) {
+    res.locals.userLoggedIn = true;
+    res.locals.username = req.user.username;
+  } else {
+    res.locals.userLoggedIn = false;
+    res.locals.username = 'Invitado';
+  }
+  next();
+});
 
 // Conexión a MongoDB
 mongoose

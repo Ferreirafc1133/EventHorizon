@@ -13,28 +13,6 @@ interface UserInterface {
     password: string;
 }
 
-interface GoogleProfile {
-    displayName: string;
-    emails: { value: string; verified: boolean }[];
-    photos: [{ value: string }];
-    id: string;  
-}
-
-interface IUser extends Document {
-    fullname: string;
-    username: string;
-    email: string;
-    password: string;
-    description?: string;
-    profilePicture?: string;
-    cvLink?: string;
-    interests: string[];
-    role: string;
-    googleId?: string;
-    comparePassword: (candidatePassword: string) => Promise<boolean>;
-}
-  
-
 const registerUser = async (req: Request, res: Response) => {
     try {
         const { fullname, username, email, password }: UserInterface = req.body;
@@ -233,67 +211,6 @@ const actualizarPP = async (req: Request, res: Response) => {
     }
 };
 
-
-
-
-const GoogleRegister = async (req: Request, res: Response) => {
-    if (!req.user) {
-        console.error('Fallo la autentificacion de google');
-        return res.status(401).send('Fallo pai');
-    }
-
-    const profile = req.user as GoogleProfile;
-    console.log('Perfil de google:', profile);
-
-    try {
-        console.log('email en el perfil:', profile.emails);
-        console.log('primer email:', profile.emails?.[0]);
-        console.log('valor del email:', profile.emails?.[0]?.value);
-
-        const email = profile.emails?.[0]?.value;
-        if (!email) {
-            console.error('Sin email ');
-            return res.status(400).send('No encontro el email desde google');
-        }
-
-        console.log('Email de Google:', email);
-
-        let user = await User.findOne({ email });
-        console.log('Usuarios con ese email:', user);
-
-        if (!user) {
-            console.log('Creando usuario...');
-            user = new User({
-                fullname: profile.displayName,
-                username: email.split('@')[0],
-                email: email,
-                profilePicture: profile.photos?.[0]?.value,
-                googleId: profile.id,
-                password: undefined  
-            });
-
-            await user.save();
-            console.log('Usuario creado:', user);
-        } else {
-            console.log('Usuario ya existe:', user);
-        }
-
-        res.redirect('/login');
-    } catch (error) {
-        console.error('Error during Google registration:', error);
-        res.status(500).send('Internal server error');
-    }
-};
-
-export default GoogleRegister;
-
-
-
-
-
-
-
-
 export {
     loginUser,
     registerUser,
@@ -301,8 +218,7 @@ export {
     verPerfil,
     editarPerfil,
     eliminarUsuario,
-    actualizarPP,
-    GoogleRegister
+    actualizarPP
 };
 
 

@@ -4,6 +4,9 @@ import adminRoutes from './adminRut';
 import { verificarToken, establecerContextoAutenticacion } from '../middlewares/authMid';
 import eventRoutes from './eventRut'; 
 import cookieParser  from 'cookie-parser';
+import { IUser } from '../models/userMod'; 
+
+
 
 declare module 'express-session' {
   interface SessionData {

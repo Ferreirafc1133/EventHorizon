@@ -1,5 +1,5 @@
 import express from 'express';
-import { loginUser, registerUser, logoutUser, editarPerfil, eliminarUsuario, verPerfil, actualizarPP, GoogleRegister} from '../controllers/authCont'; 
+import { loginUser, registerUser, logoutUser, editarPerfil, eliminarUsuario, verPerfil, actualizarPP} from '../controllers/authCont'; 
 import { verificarToken, esAdmin } from '../middlewares/authMid'; 
 import { uploadS3Middleware } from '../middlewares/userMid';
 import swaggerJsDoc from 'swagger-jsdoc';
@@ -9,7 +9,13 @@ import passport from '../middlewares/passport-config';
 import jwt from 'jsonwebtoken'; 
 const router = express.Router();
 const swaggerDocs = swaggerJsDoc(swaggerConfig);
+import { IUser } from "../models/userMod";
 
+declare global {
+  namespace Express {
+    interface User extends IUser {}
+  }
+}
 
 
 router.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocs));
@@ -284,21 +290,25 @@ router.delete('/delete', verificarToken, eliminarUsuario);
  */
 router.post('/perfil/foto', verificarToken, uploadS3Middleware, actualizarPP);
 
-router.get('/auth/google/register', passport.authenticate('google', { scope: ['profile', 'email'] }));
+router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
-router.get('/google/callback', 
-    passport.authenticate('google', { failureRedirect: '/register' }),
-    GoogleRegister
-);
+router.get('/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), (req, res) => {
+    if (req.user) {
+        const token = jwt.sign(
+            { userId: req.user._id, email: req.user.email },
+            process.env.JWT_SECRET,
+            { expiresIn: '1h' }
+        );
+        console.log(`Token generado para el usuario: ${token}`);
+        res.cookie('token', token, { httpOnly: true, secure: true });
+        req.session.username = req.user.username;  
+        res.redirect('/'); 
+    } else {
+        res.redirect('/login');
+    }
+});
 
-router.get('/auth/google/login',
-    passport.authenticate('google', { scope: ['profile', 'email'] })
-);
 
-router.get('/google/callback/login', 
-    passport.authenticate('google', { failureRedirect: '/login' }),
-    GoogleRegister
-);
 
 
 
