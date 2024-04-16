@@ -7,7 +7,6 @@ import { engine } from 'express-handlebars';
 import routes from './routes'; 
 import swaggerJsDoc from 'swagger-jsdoc';
 import swaggerUI from 'swagger-ui-express';
-import passport from './middlewares/passport-config';
 
 dotenv.config();
 
@@ -30,16 +29,8 @@ app.use((req, res, next) => {
   console.log('Sesión actual:', req.session);
   next();
 });
-app.use((req, res, next) => {
-  if (req.user) {
-    res.locals.userLoggedIn = true;
-    res.locals.username = req.user.username;
-  } else {
-    res.locals.userLoggedIn = false;
-    res.locals.username = 'Invitado';
-  }
-  next();
-});
+
+
 
 // Conexión a MongoDB
 mongoose

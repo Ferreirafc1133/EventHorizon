@@ -292,21 +292,29 @@ router.post('/perfil/foto', verificarToken, uploadS3Middleware, actualizarPP);
 
 router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
-router.get('/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), (req, res) => {
-    if (req.user) {
-        const token = jwt.sign(
-            { userId: req.user._id, email: req.user.email },
-            process.env.JWT_SECRET,
-            { expiresIn: '1h' }
-        );
-        console.log(`Token generado para el usuario: ${token}`);
-        res.cookie('token', token, { httpOnly: true, secure: true });
-        req.session.username = req.user.username;  
-        res.redirect('/'); 
-    } else {
-        res.redirect('/login');
-    }
+router.get('/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), async (req, res) => {
+  try {
+      if (req.user) {
+          const user = req.user;
+          const token = jwt.sign(
+              { userId: user._id, username: user.username }, 
+              process.env.JWT_SECRET,
+              { expiresIn: '1h' }
+          );
+          console.log(`Usuario ${user.username} autenticado exitosamente con token.`);
+          res.cookie('token', token, { httpOnly: true, secure: true });
+          res.locals.userLoggedIn = true;
+          res.locals.username = user.username;  
+          res.redirect('/');
+      } else {
+          res.redirect('/login');
+      }
+  } catch (error) {
+      console.error('Error durante la autenticación de Google:', error);
+      res.status(500).send('Error del servidor');
+  }
 });
+
 
 
 

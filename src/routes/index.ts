@@ -38,6 +38,7 @@ router.use(adminRoutes);
  *               type: string
  */
 router.get('/', (req: Request, res: Response) => {
+  console.log('Datos de res.locals:', res.locals);
   res.render('home', {
       title: 'Eventos en línea',
       customCss: '/public/styles/home.css',
