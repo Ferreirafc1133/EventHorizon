@@ -187,7 +187,7 @@ const eliminarUsuario = async (req: Request, res: Response) => {
 };
 
 
-const updateProfilePicture = async (req: Request, res: Response) => {
+const actualizarPP = async (req: Request, res: Response) => {
     if (!req.file) {
         return res.status(400).json({ mensaje: 'No se proporcionó ningún archivo.' });
     }
@@ -211,8 +211,6 @@ const updateProfilePicture = async (req: Request, res: Response) => {
     }
 };
 
-
-
 export {
     loginUser,
     registerUser,
@@ -220,7 +218,7 @@ export {
     verPerfil,
     editarPerfil,
     eliminarUsuario,
-    updateProfilePicture
+    actualizarPP
 };
 
 

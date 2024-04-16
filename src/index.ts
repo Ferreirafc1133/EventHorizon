@@ -5,44 +5,59 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { engine } from 'express-handlebars';
 import routes from './routes'; 
-dotenv.config();
 import swaggerJsDoc from 'swagger-jsdoc';
 import swaggerUI from 'swagger-ui-express';
-import swaggerConfig from './../swagger.config.json';
+
+dotenv.config();
+
+const swaggerConfig = require('./../swagger.config.json');
 const swaggerDocs = swaggerJsDoc(swaggerConfig);
 
 const app: Application = express();
 
 app.use(
   session({
-    secret: 'secretKey',
+    secret: process.env.SECRET_KEY, 
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false }, 
+    cookie: { 
+      secure: process.env.NODE_ENV === 'production' 
+    }, 
   })
 );
+app.use((req, res, next) => {
+  console.log('Sesión actual:', req.session);
+  next();
+});
 
+
+
+// Conexión a MongoDB
 mongoose
   .connect(process.env.DB_URL!)
   .then(() => console.log('Conexión a MongoDB exitosa'))
   .catch((err) => console.error('Error conectando a MongoDB', err));
 
+// Configuración de Handlebars
 app.engine('handlebars', engine({
   defaultLayout: 'main',
   layoutsDir: path.join(__dirname, 'views/layouts'),
   partialsDir: path.join(__dirname, 'views/partials')
 }));
 app.set('view engine', 'handlebars');
-app.set('views', './src/views');
+app.set('views', path.join(__dirname, 'views'));
 
-//app.use('/public', express.static(path.join(__dirname, 'public')));
+// Servir archivos estáticos
 app.use('/public', express.static(path.join(__dirname, '../public')));
 
+// Swagger UI
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocs));
 
-
+// Middlewares para parsear el cuerpo de las peticiones
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Rutas
 app.use(routes);
 
 const PORT = process.env.PORT || 3000;

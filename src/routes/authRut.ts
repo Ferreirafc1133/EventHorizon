@@ -1,14 +1,21 @@
 import express from 'express';
-import { loginUser, registerUser, logoutUser, editarPerfil, eliminarUsuario, verPerfil, updateProfilePicture  } from '../controllers/authCont'; 
+import { loginUser, registerUser, logoutUser, editarPerfil, eliminarUsuario, verPerfil, actualizarPP} from '../controllers/authCont'; 
 import { verificarToken, esAdmin } from '../middlewares/authMid'; 
 import { uploadS3Middleware } from '../middlewares/userMid';
 import swaggerJsDoc from 'swagger-jsdoc';
 import swaggerUI from 'swagger-ui-express';
 import swaggerConfig from './../../swagger.config.json';
-
+import passport from '../middlewares/passport-config';
+import jwt from 'jsonwebtoken'; 
 const router = express.Router();
 const swaggerDocs = swaggerJsDoc(swaggerConfig);
+import { IUser } from "../models/userMod";
 
+declare global {
+  namespace Express {
+    interface User extends IUser {}
+  }
+}
 
 
 router.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocs));
@@ -281,8 +288,37 @@ router.delete('/delete', verificarToken, eliminarUsuario);
  *       403:
  *         description: No autorizado. El usuario no tiene permisos para realizar esta acción.
  */
-router.post('/perfil/foto', verificarToken, uploadS3Middleware, updateProfilePicture);
+router.post('/perfil/foto', verificarToken, uploadS3Middleware, actualizarPP);
+
+router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+router.get('/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), async (req, res) => {
+  try {
+      if (req.user) {
+          const user = req.user;
+          const token = jwt.sign(
+              { userId: user._id, username: user.username }, 
+              process.env.JWT_SECRET,
+              { expiresIn: '1h' }
+          );
+          console.log(`Usuario ${user.username} autenticado exitosamente con token.`);
+          res.cookie('token', token, { httpOnly: true, secure: true });
+          res.locals.userLoggedIn = true;
+          res.locals.username = user.username;  
+          res.redirect('/');
+      } else {
+          res.redirect('/login');
+      }
+  } catch (error) {
+      console.error('Error durante la autenticación de Google:', error);
+      res.status(500).send('Error del servidor');
+  }
+});
+
+
+
+
+
 
 
 export default router;
-
