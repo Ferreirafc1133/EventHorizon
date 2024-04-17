@@ -63,7 +63,7 @@ router.get('/', (req: Request, res: Response) => {
  *             schema:
  *               type: string
  */
-router.get('/register', (req: Request, res: Response) => {
+router.get('/Register', (req: Request, res: Response) => {
   res.render('register', {
     title: 'Página de Registro',
     customCss: '/public/styles/login.css',
@@ -86,17 +86,17 @@ router.get('/register', (req: Request, res: Response) => {
  *             schema:
  *               type: string
  */
-router.get('/login', (req: Request, res: Response) => {
+router.get('/Login', (req: Request, res: Response) => {
   res.render('login', {
     title: 'Página de Inicio de Sesión',
-    customCss: '/public/styles/login.css',
+    customCss: "/public/styles/login.css",
     showNavbar: false 
   });
 });
 
 /**
  * @swagger
- * /eventos:
+ * /Eventos:
  *   get:
  *     summary: Muestra la página de eventos.
  *     description: Devuelve la página de eventos HTML, donde los usuarios pueden ver los eventos disponibles o próximos.
@@ -112,13 +112,7 @@ router.get('/login', (req: Request, res: Response) => {
 router.get('/eventos', (req: Request, res: Response) => {
   res.render('events', {
       title: 'Página de Eventos',
-      showNavbar: true 
-  });
-});
-
-router.get('/evento', (req: Request, res: Response) => {
-  res.render('event_edit', {
-      title: 'Editar Evento',
+      customCss: "/public/styles/events.css",
       showNavbar: true 
   });
 });
@@ -142,16 +136,17 @@ router.get('/evento', (req: Request, res: Response) => {
  *       401:
  *         description: No autenticado. Usuario no ha proporcionado un token válido o no está logueado.
  */
-router.get('/perfil', verificarToken, (req: Request, res: Response) => { //no sirve aun es un dummy
+router.get('/Perfil', verificarToken, (req: Request, res: Response) => { //no sirve aun es un dummy
   res.render('profile', {
       title: 'Perfil',
       showNavbar: true,
+      customCss: "/public/styles/style.css",
       userLoggedIn: res.locals.userLoggedIn,
       username: res.locals.username
   });
 });
 
-router.get('/perfil/editar', verificarToken, (req: Request, res: Response) => { //no sirve aun es un dummy
+router.get('/Perfil/Editar', verificarToken, (req: Request, res: Response) => { //no sirve aun es un dummy
   res.render('user_edit', {
       title: 'Editar Perfil',
       showNavbar: true,
@@ -175,7 +170,7 @@ router.get('/perfil/editar', verificarToken, (req: Request, res: Response) => { 
  *             schema:
  *               type: string
  */
-router.get('/users', (req: Request, res: Response) => { //no sirve aun es un dummy
+router.get('/Users', (req: Request, res: Response) => { //no sirve aun es un dummy
   res.render('users', {
       title: 'Página de usuarios',
       showNavbar: true 

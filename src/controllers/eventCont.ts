@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import Evento from '../models/eventMod'; 
 import { ResponseStatus } from '../utils/response-status';
+import User from '../models/userMod'; 
 
 const crearEvento = async (req: Request, res: Response) => {
     try {
@@ -30,6 +31,7 @@ const listarEventos = async (req: Request, res: Response) => {
         //console.log(eventos);
         res.render('events', { 
             title: "Eventos",
+            customCss: "/public/styles/events.css",
             showNavbar: true,
             eventos });
         //res.json(eventos);
@@ -54,11 +56,36 @@ const eliminarEvento = async (req: Request, res: Response) => {
     res.send({ mensaje: `Evento con id ${id} eliminado. Implementar lógica despues.` });
 };
 
+
 const asistirEvento = async (req: Request, res: Response) => {
     const { id } = req.params; 
-    const { attendeeId } = req.body; 
-    res.send({ mensaje: `Asistente con id ${attendeeId} añadido al evento con id ${id}. Implementar lógica.` });
+    const { username } = req.body;
+
+    try {
+        const evento = await Evento.findById(id);
+        if (!evento) {
+            return res.status(404).send({ mensaje: 'Evento no encontrado.' });
+        }
+
+        const usuario = await User.findOne({ username: username });
+        if (!usuario) {
+            return res.status(404).send({ mensaje: 'Usuario no encontrado.' });
+        }
+
+        if (evento.asistentes.includes(usuario._id)) {
+            return res.status(400).send({ mensaje: 'El usuario ya está inscrito en el evento.' });
+        }
+
+        evento.asistentes.push(usuario._id);
+        await evento.save();
+
+        res.status(200).send({ mensaje: `Usuario con id ${usuario._id} ha sido añadido al evento con id ${id}.` });
+    } catch (error) {
+        res.status(500).send({ mensaje: 'Error al procesar la solicitud.', error: error.message });
+    }
 };
+
+
 
 const eliminarAsistente = async (req: Request, res: Response) => {
     const { id } = req.params; 

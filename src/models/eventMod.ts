@@ -1,4 +1,5 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
+import { IUser } from './userMod';
 
 interface IEvento extends mongoose.Document {
   titulo: string;
@@ -6,8 +7,9 @@ interface IEvento extends mongoose.Document {
   fechaInicio: Date;
   fechaFin: Date;
   activo: boolean;
-  organizador: string;
-  colaboradores: string[];
+  organizador: IUser['_id']; 
+  colaboradores: IUser['_id'][]; 
+  asistentes: IUser['_id'][]; 
 }
 
 const eventoSchema = new mongoose.Schema<IEvento>({
@@ -33,13 +35,21 @@ const eventoSchema = new mongoose.Schema<IEvento>({
     default: true 
   },
   organizador: {
-    type: String,
-    required: true
+    type: Schema.Types.ObjectId,
+    required: true,
+    ref: 'Usuario' 
   },
   colaboradores: {
-    type: [String], 
-    required: false, 
-    default: [] 
+    type: [Schema.Types.ObjectId],
+    required: false,
+    default: [],
+    ref: 'Usuario'
+  },
+  asistentes: {
+    type: [Schema.Types.ObjectId],
+    required: false,
+    default: [],
+    ref: 'Usuario' 
   }
 });
 

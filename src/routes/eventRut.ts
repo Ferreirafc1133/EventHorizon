@@ -59,47 +59,25 @@ router.post('/evento', verificarToken, crearEvento);
 /**
  * @swagger
  * /eventos:
- *  get:
- *   summary: Lista todos los eventos
- *   tags: [Eventos]
- *   security:
- *     - bearerAuth: []
- *   responses:
- *     200:
- *       description: Lista de eventos obtenida exitosamente.
- *       content:
- *         application/json:
- *           schema:
- *             type: array
- *             items:
- *               type: object
- *               properties:
- *                 id:
- *                   type: string
- *                   description: ID único del evento.
- *                 nombre:
- *                   type: string
- *                   description: Nombre del evento.
- *                 descripcion:
- *                   type: string
- *                   description: Descripción detallada del evento.
- *                 fechaInicio:
- *                   type: string
- *                   format: date-time
- *                   description: Fecha y hora de inicio del evento.
- *                 fechaFin:
- *                   type: string
- *                   format: date-time
- *                   description: Fecha y hora de fin del evento.
- *                 ubicacion:
- *                   type: string
- *                   description: Ubicación del evento.
- *                 imagen:
- *                   type: string
- *                   description: URL de la imagen del evento.
- *     401:
- *       description: No autorizado, token inválido o no proporcionado.
- *   description: Devuelve una lista de todos los eventos disponibles para los usuarios autenticados.
+ *   get:
+ *     summary: Lista todos los eventos
+ *     description: Obtiene una lista de todos los eventos disponibles. Requiere autenticación.
+ *     tags: [Eventos]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Una lista de eventos.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Evento'
+ *       401:
+ *         description: Usuario no autenticado o token no válido.
+ *       500:
+ *         description: Error interno del servidor.
  */
 router.get('/eventos', verificarToken, listarEventos);
 
