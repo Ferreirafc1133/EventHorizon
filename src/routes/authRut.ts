@@ -290,8 +290,61 @@ router.delete('/delete', verificarToken, eliminarUsuario);
  */
 router.post('/perfil/foto', verificarToken, uploadS3Middleware, actualizarPP);
 
+/**
+ * @swagger
+ * /auth/google:
+ *   get:
+ *     summary: Inicio de sesión con Google
+ *     description: Redirige al usuario a la pantalla de autenticización de Google.
+ *     tags: [Autenticacion]
+ *     responses:
+ *       302:
+ *         description: Redireccionamiento a Google para la autenticación.
+ *       500:
+ *         description: Error interno del servidor.
+ */
 router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
+/**
+ * @swagger
+ * /google/callback:
+ *   get:
+ *     summary: Callback de autenticación de Google
+ *     description: Endpoint al que Google redirige tras una autenticación exitosa. Gestiona la creación del token JWT para el usuario y establece una cookie de sesión.
+ *     tags: [Autenticacion]
+ *     parameters:
+ *       - in: query
+ *         name: code
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: El código de autorización proporcionado por Google.
+ *       - in: query
+ *         name: scope
+ *         schema:
+ *           type: string
+ *         required: false
+ *         description: El ámbito de los permisos otorgados por el usuario.
+ *       - in: query
+ *         name: authuser
+ *         schema:
+ *           type: string
+ *         required: false
+ *         description: El número de cuenta del usuario si tienen varias cuentas de Google.
+ *       - in: query
+ *         name: prompt
+ *         schema:
+ *           type: string
+ *         required: false
+ *         description: Indica si Google ha requerido al usuario que se reautentique y otorgue de nuevo los permisos.
+ *     responses:
+ *       302:
+ *         description: Redireccionamiento a la página principal con el usuario autenticado.
+ *       400:
+ *         description: Autenticación fallida, redireccionamiento a la página de login.
+ *       500:
+ *         description: Error interno del servidor.
+ */
 router.get('/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), async (req, res) => {
   try {
       if (req.user) {

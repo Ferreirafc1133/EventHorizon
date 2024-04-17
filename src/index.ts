@@ -7,7 +7,10 @@ import { engine } from 'express-handlebars';
 import routes from './routes'; 
 import swaggerJsDoc from 'swagger-jsdoc';
 import swaggerUI from 'swagger-ui-express';
+import { registerHelpers } from './middlewares/handlebars.config';
 
+
+registerHelpers();
 dotenv.config();
 
 const swaggerConfig = require('./../swagger.config.json');
