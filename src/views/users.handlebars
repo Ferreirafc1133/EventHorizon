@@ -7,9 +7,18 @@
 </head>
 <body>
     <h1>Lista de Usuarios</h1>
-    {{#each Usuarios}}
-        <p>Nombre: {{username}}</p>
-        <p>Email: {{email}}</p>
+    {{#each users}}
+        <div class="user-card">
+            <p>Id: {{_id}}</p>
+            <p>Nombre: {{username}}</p>
+            <p>Email: {{email}}</p>
+            <button class="edit-btn" onclick="editUser('{{_id}}')">Editar</button>
+        </div>
     {{/each}}
+    <script>
+        function editUser(userId){
+            window.location.href = `/users/${userId}`;
+        }
+    </script>
 </body>
 </html>

@@ -69,7 +69,7 @@ router.get('/users/:id', verificarToken, esAdmin, getUserById);
  *       200:
  *         description: Usuario actualizado
  */
-router.put('/users/:id', verificarToken, esAdmin, updateUserById);
+router.put('/users/update/:id', verificarToken, esAdmin, updateUserById);
 
 /**
  * @swagger
@@ -117,6 +117,6 @@ router.put('/users/:id/roles', verificarToken, esAdmin, cambiarRolUsuario);
  *       200:
  *         description: Usuario eliminado
  */
-router.delete('/users/:id', verificarToken, esAdmin, deleteUserById)
+router.delete('/users/delete/:id', verificarToken, esAdmin, deleteUserById)
 
 export default router;
