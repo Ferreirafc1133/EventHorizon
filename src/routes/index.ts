@@ -170,12 +170,12 @@ router.get('/Perfil/Editar', verificarToken, (req: Request, res: Response) => { 
  *             schema:
  *               type: string
  */
-router.get('/Users', (req: Request, res: Response) => { //no sirve aun es un dummy
+/*router.get('/Users', (req: Request, res: Response) => { //no sirve aun es un dummy
   res.render('users', {
       title: 'Página de usuarios',
       showNavbar: true 
   });
-});
+});*/
 
 
 
