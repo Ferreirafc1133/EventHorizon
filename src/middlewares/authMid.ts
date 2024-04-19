@@ -14,6 +14,7 @@ declare global {
 interface DecodedToken {
     userId: string;
     username: string;
+    userRole: string;
 }
 
 export const verificarToken = (req: Request, res: Response, next: NextFunction): void => {
@@ -44,6 +45,7 @@ export const establecerContextoAutenticacion = (req: Request, res: Response, nex
             console.log("Payload decodificado:", decoded); 
             res.locals.userLoggedIn = true;
             res.locals.username = decoded.username; 
+            res.locals.role = decoded.userRole;
         } catch (error) {
             console.error("Error al verificar token:", error); 
             res.locals.userLoggedIn = false;
