@@ -14,6 +14,19 @@ AWS_SECRET_ACCESS_KEY= yf+Mmc0U1IZi2gma0h3Gc/uD35XVEa3ocKJp9sav
 AWS_BUCKET_NAME= eventhorizon
 AWS_REGION= us-east-2
 
+GOOGLE_ID = 713891068216-0cka6s5n0l2rcf0i0s7tcbb0vuh17as1.apps.googleusercontent.com
+GOOGLE_SECRET = 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
+SECRET_KEY = admin
+GOOGLE_CALLBACK=http://localhost:3000/google/callback
+
+#amazon:
+#Console login URL
+#https://654654623664.signin.aws.amazon.com/console
+#Username
+#FerreiraPapi
+#Console password
+#Deuteronomy 1
+
 
 
 # pruebas
@@ -39,3 +52,5 @@ http://localhost:3000/users
 
 esta la usas para ver el swagger:
 http://localhost:3000/api-docs/
+
+lo unico nuevo son todas las rutas de admin, y tienes que mover el .env para tener las credenciales de la api de google, y para probarlo tan facil como picarle al boton de google y listo, ademas de que te vallas a eventos los colores son aleatorios.

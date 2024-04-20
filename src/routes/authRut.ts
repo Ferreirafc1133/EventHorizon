@@ -354,7 +354,6 @@ router.get('/google/callback', passport.authenticate('google', { failureRedirect
               process.env.JWT_SECRET,
               { expiresIn: '1h' }
           );
-          console.log(`Usuario ${user.username} autenticado exitosamente con token.`);
           res.cookie('token', token, { httpOnly: true, secure: true });
           res.locals.userLoggedIn = true;
           res.locals.username = user.username;  

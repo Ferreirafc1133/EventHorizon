@@ -5,11 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import dotenv from 'dotenv';
 dotenv.config();
 
-console.log('Configuración de AWS:', {
-    region: process.env.AWS_REGION,
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    bucket: process.env.AWS_BUCKET_NAME
-  });
+
 const s3 = new S3Client({
     region: process.env.AWS_REGION,
     credentials: {
