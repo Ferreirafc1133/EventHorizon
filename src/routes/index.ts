@@ -38,11 +38,14 @@ router.use(adminRoutes);
  *               type: string
  */
 router.get('/', (req: Request, res: Response) => {
+console.log('Datos de res.locals:', res.locals);
+  const isAdmin = res.locals.role === 'admin';
   res.render('home', {
       title: 'Eventos en línea',
       customCss: '/public/styles/home.css',
       showNavbar: true,
       userLoggedIn: res.locals.userLoggedIn,
+      is_Admin: isAdmin,
       username: res.locals.username || 'Invitado'
   });
 });
