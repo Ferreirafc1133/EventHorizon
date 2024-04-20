@@ -38,7 +38,7 @@ router.use(adminRoutes);
  *               type: string
  */
 router.get('/', (req: Request, res: Response) => {
-  console.log('Datos de res.locals:', res.locals);
+console.log('Datos de res.locals:', res.locals);
   const isAdmin = res.locals.role === 'admin';
   res.render('home', {
       title: 'Eventos en línea',
@@ -98,29 +98,6 @@ router.get('/Login', (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /Eventos:
- *   get:
- *     summary: Muestra la página de eventos.
- *     description: Devuelve la página de eventos HTML, donde los usuarios pueden ver los eventos disponibles o próximos.
- *     tags: [HTML]
- *     responses:
- *       200:
- *         description: Página de eventos HTML.
- *         content:
- *           text/html:
- *             schema:
- *               type: string
- */
-router.get('/eventos', (req: Request, res: Response) => {
-  res.render('events', {
-      title: 'Página de Eventos',
-      customCss: "/public/styles/events.css",
-      showNavbar: true 
-  });
-});
-
-/**
- * @swagger
  * /perfil/editar:
  *   get:
  *     summary: Muestra la página para editar el perfil de usuario.
@@ -172,12 +149,12 @@ router.get('/Perfil/Editar', verificarToken, (req: Request, res: Response) => { 
  *             schema:
  *               type: string
  */
-/*router.get('/Users', (req: Request, res: Response) => { //no sirve aun es un dummy
+router.get('/Users', (req: Request, res: Response) => { //no sirve aun es un dummy
   res.render('users', {
       title: 'Página de usuarios',
       showNavbar: true 
   });
-});*/
+});
 
 
 

@@ -14,15 +14,21 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
+
 function asistirEvento(eventoId) {
+  const username = document.body.getAttribute('data-username');
+  if (!username) {
+      alert('No estás autenticado o no se ha proporcionado el nombre de usuario.');
+      return;
+  }
+
   fetch(`/eventos/${eventoId}/asistente`, {
       method: 'POST',
       headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + localStorage.getItem('token')  
       },
       body: JSON.stringify({
-          attendeeId: '{{userLoggedIn._id}}'  
+          username: username
       })
   })
   .then(response => response.json())
@@ -33,3 +39,5 @@ function asistirEvento(eventoId) {
       console.error('Error:', error);
   });
 }
+
+

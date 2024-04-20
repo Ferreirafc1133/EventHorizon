@@ -6,14 +6,12 @@ import { Error } from 'mongoose';
 import jwt from 'jsonwebtoken';
 
 require('dotenv').config();passport.serializeUser((user: IUser, done) => {
-  console.log('usuario serializado:', user);
   done(null, user._id);  
 });
 
 passport.deserializeUser(async (id, done) => {
   try {
     const user = await User.findById(id);
-    console.log('Usuario encontrado con ID:', user);
     done(null, user);
   } catch (error) {
     console.error('Error al deserializar el usuario:', error);
@@ -27,7 +25,6 @@ passport.use(new GoogleStrategy({
   callbackURL: process.env.GOOGLE_CALLBACK,
   scope: ['profile', 'email']
 }, async (accessToken, refreshToken, profile, done) => {
-  console.log('Perfil recibido de la configuración:', profile);
   try {
     const email = profile.emails && profile.emails.length > 0 ? profile.emails[0].value : null;
     if (!email) {
@@ -37,7 +34,6 @@ passport.use(new GoogleStrategy({
     let user = await User.findOne({ googleId: profile.id }) || await User.findOne({ email: email });
 
     if (!user) {
-      console.log('No existe el usuario, creando uno nuevo...');
       user = new User({
         fullname: profile.displayName,
         username: email.split('@')[0],
