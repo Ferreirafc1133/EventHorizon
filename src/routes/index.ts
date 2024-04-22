@@ -38,7 +38,7 @@ router.use(adminRoutes);
  *               type: string
  */
 router.get('/', (req: Request, res: Response) => {
-console.log('Datos de res.locals:', res.locals);
+  console.log('Datos de res.locals:', res.locals);
   const isAdmin = res.locals.role === 'admin';
   res.render('home', {
       title: 'Eventos en línea',
@@ -96,6 +96,7 @@ router.get('/Login', (req: Request, res: Response) => {
   });
 });
 
+
 /**
  * @swagger
  * /perfil/editar:
@@ -116,20 +117,24 @@ router.get('/Login', (req: Request, res: Response) => {
  *         description: No autenticado. Usuario no ha proporcionado un token válido o no está logueado.
  */
 router.get('/Perfil', verificarToken, (req: Request, res: Response) => { //no sirve aun es un dummy
+  const isAdmin = res.locals.role === 'admin';
   res.render('profile', {
       title: 'Perfil',
       showNavbar: true,
       customCss: "/public/styles/style.css",
       userLoggedIn: res.locals.userLoggedIn,
+      is_Admin: isAdmin,
       username: res.locals.username
   });
 });
 
 router.get('/Perfil/Editar', verificarToken, (req: Request, res: Response) => { //no sirve aun es un dummy
+  const isAdmin = res.locals.role === 'admin';
   res.render('user_edit', {
       title: 'Editar Perfil',
       showNavbar: true,
       userLoggedIn: res.locals.userLoggedIn,
+      is_Admin: isAdmin,
       username: res.locals.username 
   });
 });
@@ -149,12 +154,12 @@ router.get('/Perfil/Editar', verificarToken, (req: Request, res: Response) => { 
  *             schema:
  *               type: string
  */
-router.get('/Users', (req: Request, res: Response) => { //no sirve aun es un dummy
+/*router.get('/Users', (req: Request, res: Response) => { //no sirve aun es un dummy
   res.render('users', {
       title: 'Página de usuarios',
       showNavbar: true 
   });
-});
+});*/
 
 
 
