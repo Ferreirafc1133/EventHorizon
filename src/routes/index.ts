@@ -4,7 +4,7 @@ import adminRoutes from './adminRut';
 import { verificarToken, establecerContextoAutenticacion } from '../middlewares/authMid';
 import eventRoutes from './eventRut'; 
 import cookieParser  from 'cookie-parser';
-import { IUser } from '../models/userMod'; 
+import User from '../models/userMod';
 
 
 
@@ -116,7 +116,7 @@ router.get('/Login', (req: Request, res: Response) => {
  *       401:
  *         description: No autenticado. Usuario no ha proporcionado un token válido o no está logueado.
  */
-router.get('/Perfil', verificarToken, (req: Request, res: Response) => { //no sirve aun es un dummy
+/*router.get('/Perfil', verificarToken, (req: Request, res: Response) => { //no sirve aun es un dummy
   const isAdmin = res.locals.role === 'admin';
   res.render('profile', {
       title: 'Perfil',
@@ -160,6 +160,16 @@ router.get('/Perfil/Editar', verificarToken, (req: Request, res: Response) => { 
       showNavbar: true 
   });
 });*/
+
+router.get('/userChats', verificarToken, async (req: Request, res: Response) => {
+  const users = await User.find({}).lean();
+  res.render('prevchat', {
+    title: 'Networking',
+    showNavbar: true,
+    userLoggedIn: res.locals.userLoggedIn,
+    users    
+  })
+})
 
 
 
