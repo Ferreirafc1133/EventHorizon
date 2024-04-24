@@ -27,19 +27,60 @@ const crearEvento = async (req: Request, res: Response) => {
 
 const listarEventos = async (req: Request, res: Response) => {
     try {
-        const eventos = await Evento.find({}).lean();
-        //console.log(eventos);
-        res.render('events', { 
+        const eventos = await Evento.aggregate([
+            {
+                $lookup: {
+                    from: "users",
+                    let: { organizadorId: "$organizador" },
+                    pipeline: [
+                        { $match: { $expr: { $eq: ["$_id", { $toObjectId: "$$organizadorId" }] } } }
+                    ],
+                    as: "infoOrganizador"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$infoOrganizador",
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    let: { colaboradorIds: "$colaboradores" },
+                    pipeline: [
+                        { $match: { $expr: { $in: ["$_id", { $map: { input: "$$colaboradorIds", as: "colaboradorId", in: { $toObjectId: "$$colaboradorId" } } }] } } }
+                    ],
+                    as: "infoColaboradores"
+                }
+            },
+            {
+                $project: {
+                    _id: 1,
+                    titulo: 1,
+                    descripcion: 1,
+                    fechaInicio: 1,
+                    fechaFin: 1,
+                    activo: 1,
+                    organizador: "$infoOrganizador.fullname",
+                    colaboradores: "$infoColaboradores.fullname",  
+                    asistentes: 1
+                }
+            }
+        ]);        
+        const isAdmin = res.locals.role === 'admin';
+        res.render('events', {
             title: "Eventos",
             customCss: "/public/styles/events.css",
             showNavbar: true,
-            eventos });
-        //res.json(eventos);
+            is_Admin: isAdmin,
+            eventos
+        });
     } catch (err) {
         console.error('Error al listar los eventos:', err);
-        res.status(ResponseStatus.INTERNAL_SERVER_ERROR).send('Error al listar los eventos');
+        res.status(500).send('Error al listar los eventos');
     }
-}; //nice
+};//nice
 
 const inscribirEvento = async (req: Request, res: Response) => {
     const { id } = req.params;

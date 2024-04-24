@@ -96,28 +96,6 @@ router.get('/Login', (req: Request, res: Response) => {
   });
 });
 
-/**
- * @swagger
- * /Eventos:
- *   get:
- *     summary: Muestra la página de eventos.
- *     description: Devuelve la página de eventos HTML, donde los usuarios pueden ver los eventos disponibles o próximos.
- *     tags: [HTML]
- *     responses:
- *       200:
- *         description: Página de eventos HTML.
- *         content:
- *           text/html:
- *             schema:
- *               type: string
- */
-router.get('/eventos', (req: Request, res: Response) => {
-  res.render('events', {
-      title: 'Página de Eventos',
-      customCss: "/public/styles/events.css",
-      showNavbar: true 
-  });
-});
 
 /**
  * @swagger
@@ -139,20 +117,24 @@ router.get('/eventos', (req: Request, res: Response) => {
  *         description: No autenticado. Usuario no ha proporcionado un token válido o no está logueado.
  */
 router.get('/Perfil', verificarToken, (req: Request, res: Response) => { //no sirve aun es un dummy
+  const isAdmin = res.locals.role === 'admin';
   res.render('profile', {
       title: 'Perfil',
       showNavbar: true,
       customCss: "/public/styles/style.css",
       userLoggedIn: res.locals.userLoggedIn,
+      is_Admin: isAdmin,
       username: res.locals.username
   });
 });
 
 router.get('/Perfil/Editar', verificarToken, (req: Request, res: Response) => { //no sirve aun es un dummy
+  const isAdmin = res.locals.role === 'admin';
   res.render('user_edit', {
       title: 'Editar Perfil',
       showNavbar: true,
       userLoggedIn: res.locals.userLoggedIn,
+      is_Admin: isAdmin,
       username: res.locals.username 
   });
 });

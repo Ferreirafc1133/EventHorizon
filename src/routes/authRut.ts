@@ -248,7 +248,7 @@ router.delete('/delete', verificarToken, eliminarUsuario);
 
 /**
  * @swagger
- * /perfil/foto:
+ * /perfil/foto/:userid:
  *   post:
  *     summary: Sube la foto de perfil del usuario.
  *     description: Permite a un usuario subir una nueva foto de perfil, la cual se guarda en AWS S3. Requiere autenticación.
@@ -288,7 +288,7 @@ router.delete('/delete', verificarToken, eliminarUsuario);
  *       403:
  *         description: No autorizado. El usuario no tiene permisos para realizar esta acción.
  */
-router.post('/perfil/foto', verificarToken, uploadS3Middleware, actualizarPP);
+router.post('/perfil/foto/:userId', verificarToken, uploadS3Middleware, actualizarPP);
 
 /**
  * @swagger
@@ -354,7 +354,6 @@ router.get('/google/callback', passport.authenticate('google', { failureRedirect
               process.env.JWT_SECRET,
               { expiresIn: '1h' }
           );
-          console.log(`Usuario ${user.username} autenticado exitosamente con token.`);
           res.cookie('token', token, { httpOnly: true, secure: true });
           res.locals.userLoggedIn = true;
           res.locals.username = user.username;  
