@@ -1,5 +1,5 @@
 import express from 'express';
-import { loginUser, registerUser, logoutUser, editarPerfil, eliminarUsuario, verPerfil, actualizarPP} from '../controllers/authCont'; 
+import { loginUser, registerUser, logoutUser, editarPerfil, eliminarUsuario, verPerfil, actualizarPP,getUserId} from '../controllers/authCont'; 
 import { verificarToken, esAdmin } from '../middlewares/authMid'; 
 import { uploadS3Middleware } from '../middlewares/userMid';
 import swaggerJsDoc from 'swagger-jsdoc';
@@ -182,6 +182,18 @@ router.get('/me', verificarToken, verPerfil);
 
 /**
  * @swagger
+ * /miperfil:
+ *   get:
+ *     summary: Obtiene el ID del usuario y le puestra su informacion
+ *    
+ *     responses:
+ *       200:
+ *         description: Detalles del perfil del usuario
+ */
+router.get('/miperfil', verificarToken, getUserId);
+
+/**
+ * @swagger
  * /edit:
  *  put:
  *   summary: Edita el perfil del usuario
@@ -223,7 +235,7 @@ router.get('/me', verificarToken, verPerfil);
  *       description: No autorizado, token inválido o no proporcionado.
  *   description: Permite a los usuarios autenticados editar su perfil, incluyendo nombre, correo electrónico y contraseña.
  */
-router.put('/edit', verificarToken, editarPerfil);
+router.put('/usuarios/actualizar/:userId', verificarToken, editarPerfil);
 
 /**
  * @swagger

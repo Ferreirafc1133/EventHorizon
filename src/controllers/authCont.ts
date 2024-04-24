@@ -139,6 +139,25 @@ const verPerfil = async (req: Request, res: Response) => {
     }
 };
 
+const getUserId = async (req: Request, res: Response) => {
+    try{
+
+        const user = await User.findById(req.usuario.userId).lean();
+        //console.log(user);
+        res.render('profile', {
+            title:"Editar Usuario (admin)",
+            customCss:"/public/styles/edituser.css",
+            showNavbar: true,
+            user
+        })
+    } catch(err){
+        console.log("Error al mostrar usuario", err);
+        res.status(ResponseStatus.INTERNAL_SERVER_ERROR).send("Error al mostrar usuario");
+    }
+    //console.log("funciona");
+    //res.status(200).json({ mensaje: "Consulta de usuario por ID realizada" });
+};
+
 
 const editarPerfil = async (req: Request, res: Response) => {
     try {
@@ -152,7 +171,7 @@ const editarPerfil = async (req: Request, res: Response) => {
             fullname: req.body.fullname,
             username: req.body.username,
             email: req.body.email,
-            role: req.body.role
+            interests: req.body.interests
         };
 
         const updatedUser = await User.findByIdAndUpdate(userId, updates, { new: true });
@@ -226,7 +245,8 @@ export {
     verPerfil,
     editarPerfil,
     eliminarUsuario,
-    actualizarPP
+    actualizarPP,
+    getUserId
 };
 
 
