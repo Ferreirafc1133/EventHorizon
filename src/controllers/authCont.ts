@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import User from '../models/userMod';
 import { ResponseStatus } from '../utils/response-status';
 import jwt from 'jsonwebtoken';
+import mongoose from 'mongoose';
 
 
 
@@ -191,9 +192,13 @@ const actualizarPP = async (req: Request, res: Response) => {
     if (!req.file) {
         return res.status(400).json({ mensaje: 'No se proporcionó ningún archivo.' });
     }
+      
     const file = req.file as Express.MulterS3.File; 
     try {
-        const userId = req.usuario?.userId; 
+        const userId = req.params.userId;
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({ mensaje: 'El ID de usuario proporcionado no es válido.' });
+        }  
         const profilePictureUrl = file.location; 
 
         const updatedUser = await User.findByIdAndUpdate(userId, {
@@ -207,7 +212,10 @@ const actualizarPP = async (req: Request, res: Response) => {
         res.status(200).json({ mensaje: 'Foto de perfil actualizada con éxito.', profilePicture: profilePictureUrl });
     } catch (err) {
         console.error('Error al actualizar la foto de perfil:', err);
-        res.status(500).send('Error interno del servidor');
+        res.status(500).json({
+            mensaje: 'Error interno del servidor',
+            error: err.message
+        });
     }
 };
 
