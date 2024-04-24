@@ -68,10 +68,12 @@ const listarEventos = async (req: Request, res: Response) => {
                 }
             }
         ]);        
+        const isAdmin = res.locals.role === 'admin';
         res.render('events', {
             title: "Eventos",
             customCss: "/public/styles/events.css",
             showNavbar: true,
+            is_Admin: isAdmin,
             eventos
         });
     } catch (err) {
