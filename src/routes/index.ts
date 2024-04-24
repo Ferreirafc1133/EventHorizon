@@ -4,7 +4,7 @@ import adminRoutes from './adminRut';
 import { verificarToken, establecerContextoAutenticacion } from '../middlewares/authMid';
 import eventRoutes from './eventRut'; 
 import cookieParser  from 'cookie-parser';
-import { IUser } from '../models/userMod'; 
+import User from '../models/userMod';
 
 
 
@@ -160,6 +160,16 @@ router.get('/Perfil/Editar', verificarToken, (req: Request, res: Response) => { 
       showNavbar: true 
   });
 });*/
+
+router.get('/userChats', verificarToken, async (req: Request, res: Response) => {
+  const users = await User.find({}).lean();
+  res.render('prevchat', {
+    title: 'Networking',
+    showNavbar: true,
+    userLoggedIn: res.locals.userLoggedIn,
+    users    
+  })
+})
 
 
 
