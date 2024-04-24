@@ -41,3 +41,131 @@ function asistirEvento(eventoId) {
 }
 
 
+function editUser(userId){
+  window.location.href = `/users/${userId}`;
+}
+
+  
+function toggleEditMode() {
+  const properties = ['fullname', 'username', 'email', 'role'];
+
+  properties.forEach(property => {
+      const span = document.getElementById(property);
+      const input = document.getElementById(`edit-${property}`);
+      if (input.type !== 'file') {
+          input.value = span.innerText;
+      } else {
+          input.src = span.innerText;
+      }
+      if (input.style.display === 'none') {
+          span.style.display = 'none';
+          input.style.display = 'inline-block';
+      } else {
+          span.style.display = 'inline-block';
+          input.style.display = 'none';
+      }
+  });
+  const img = document.getElementById('profilePicture');
+  const fileInput = document.getElementById('edit-profilePicture');
+  img.style.display = img.style.display === 'none' ? 'block' : 'none';
+  fileInput.style.display = fileInput.style.display === 'none' ? 'block' : 'none';
+
+  const editButton = document.querySelector('.btn-edit');
+  const updateButton = document.querySelector('.btn-update');
+
+  if (editButton.style.display === 'none') {
+      editButton.style.display = 'inline-block';
+      updateButton.style.display = 'none';
+  } else {
+      editButton.style.display = 'none';
+      updateButton.style.display = 'inline-block';
+  }
+}
+
+function previewImage(event) {
+  const [file] = event.target.files;
+  if (file) {
+    const img = document.getElementById('profilePicture');
+    img.src = URL.createObjectURL(file);
+  }
+}
+
+async function updateUser(userId) {
+  const newData = {
+    fullname: document.getElementById('edit-fullname').value,
+    username: document.getElementById('edit-username').value,
+    email: document.getElementById('edit-email').value,
+    role: document.getElementById('edit-role').value
+  };
+  const profilePictureInput = document.getElementById('edit-profilePicture');
+
+  try {
+    if (profilePictureInput.files.length > 0) {
+      await updateProfilePicture(userId);
+    }
+
+    const response = await fetch(`/users/update/${userId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ userId, newData })
+    });
+
+    if (response.ok) {
+      window.location.href = `/users/${userId}`;
+    } else {
+      throw new Error('Network response was not ok');
+    }
+  } catch (error) {
+    console.error('Error updating user:', error);
+    alert('Error al actualizar el usuario: ' + error.message);
+  }
+}
+
+function updateProfilePicture(userId) {
+  const input = document.getElementById('edit-profilePicture');
+  if (input.files.length === 0) {
+      alert('Por favor, selecciona una imagen para subir.');
+      return;
+  }
+  const file = input.files[0];
+  const formData = new FormData();
+  formData.append('file', file); 
+
+  fetch(`/perfil/foto/${userId}`, {
+      method: 'POST',
+      body: formData
+  })
+  .then(response => response.json())
+  .then(data => {
+      if (data.profilePicture) {
+          alert('Foto de perfil actualizada con éxito.');
+          document.getElementById('profilePicture').src = data.profilePicture;
+      } else {
+          throw new Error(data.mensaje);
+      }
+  })
+  .catch(error => {
+      console.error('Error al actualizar la foto de perfil:', error);
+      alert('Error al actualizar la foto de perfil: ' + error.message);
+  });
+}
+
+
+function deleteUser(userId) {
+fetch(`/users/delete/${userId}`, {
+  method: 'DELETE'
+})
+.then(response => {
+  if (response.ok) {
+      window.location.href = `/usersLists`;
+  } else {
+      throw new Error('Network response was not ok');
+  }
+})
+.catch(error => {
+  console.error('Error deleting user:', error);
+  res.status(500).send('Error eliminando usuario');
+});
+}

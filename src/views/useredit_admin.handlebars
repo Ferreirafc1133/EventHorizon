@@ -7,87 +7,11 @@
     <input type="email" id="edit-email" value="{{user.email}}" style="display: none;">
     <p><strong>Rol:</strong> <span id="role">{{user.role}}</span></p>
     <input type="text" id="edit-role" value="{{user.role}}" style="display: none;">
-    <p><strong>Imagen de perfil:</strong> <span id="profilePicture">{{user.profilePicture}}</span></p>
-    <input type="text" id="edit-profilePicture" value="{{user.profilePicture}}" style="display: none;">
-    
+    <p><strong>Imagen de perfil:</strong></p>
+    <img id="profilePicture" src="{{user.profilePicture}}" alt="Imagen de perfil" style="max-width:200px; max-height:200px;">
+    <input type="file" id="edit-profilePicture" style="display: none;" onchange="previewImage(event)">
+        
     <button class="btn-edit" onclick="toggleEditMode()">Editar</button>
     <button class="btn-update" onclick="updateUser('{{user._id}}')" style="display: none;">Actualizar</button>
     <button class="btn-delete" onclick="deleteUser('{{user._id}}')">Eliminar</button>
 </div>
-<script>
-    function toggleEditMode() {
-        const properties = ['fullname', 'username', 'email', 'role', 'profilePicture'];
-
-        properties.forEach(property => {
-            const span = document.getElementById(property);
-            const input = document.getElementById(`edit-${property}`);
-            if (input.type !== 'file') {
-                input.value = span.innerText;
-            } else {
-                input.src = span.innerText;
-            }
-            if (input.style.display === 'none') {
-                span.style.display = 'none';
-                input.style.display = 'inline-block';
-            } else {
-                span.style.display = 'inline-block';
-                input.style.display = 'none';
-            }
-        });
-
-        const editButton = document.querySelector('.btn-edit');
-        const updateButton = document.querySelector('.btn-update');
-
-        if (editButton.style.display === 'none') {
-            editButton.style.display = 'inline-block';
-            updateButton.style.display = 'none';
-        } else {
-            editButton.style.display = 'none';
-            updateButton.style.display = 'inline-block';
-        }
-    }
-    function updateUser(userId) {
-        const newData = {
-            fullname: document.getElementById('edit-fullname').value,
-            username: document.getElementById('edit-username').value,
-            email: document.getElementById('edit-email').value,
-            role: document.getElementById('edit-role').value,
-            profilePicture: document.getElementById('edit-profilePicture').value
-        };
-
-        fetch(`/users/update/${userId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ userId, newData })
-        })
-        .then(response => {
-            if (response.ok) {
-                window.location.href = `/users/${userId}`;
-            } else {
-                throw new Error('Network response was not ok');
-            }
-        })
-        .catch(error => {
-            console.error('Error updating user:', error);
-            res.status(500).send('Error updating user');
-        });
-    }
-    function deleteUser(userId) {
-    fetch(`/users/delete/${userId}`, {
-        method: 'DELETE'
-    })
-    .then(response => {
-        if (response.ok) {
-            window.location.href = `/usersLists`;
-        } else {
-            throw new Error('Network response was not ok');
-        }
-    })
-    .catch(error => {
-        console.error('Error deleting user:', error);
-        res.status(500).send('Error eliminando usuario');
-    });
-}
-</script>
