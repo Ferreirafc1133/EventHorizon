@@ -8,7 +8,9 @@ import routes from './routes';
 import swaggerJsDoc from 'swagger-jsdoc';
 import swaggerUI from 'swagger-ui-express';
 import { registerHelpers } from './middlewares/handlebars.config';
-
+import socketIo from 'socket.io';
+import { createServer } from 'http';
+import { Server as SocketIOServer } from 'socket.io';
 
 registerHelpers();
 dotenv.config();
@@ -17,6 +19,7 @@ const swaggerConfig = require('./../swagger.config.json');
 const swaggerDocs = swaggerJsDoc(swaggerConfig);
 
 const app: Application = express();
+
 
 app.use(
   session({
@@ -64,6 +67,31 @@ app.use(routes);
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
+const httpServer = createServer(app);
+const io = new SocketIOServer(httpServer);
+
+httpServer.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+io.on('connection', (socket) => {
+  console.log('A new user connected');
+
+  socket.on('newUser', (data) => {
+    socket.data.username = data.user;  
+    console.log(`${data.user} joined the chat`);
+    socket.broadcast.emit('newUser', data);
+  });
+
+  socket.on('newMessage', (data) => {
+    console.log(`Message from ${socket.data.username}: ${data.message}`);
+    socket.broadcast.emit('newMessage', { user: socket.data.username, message: data.message });
+  });
+
+  socket.on('disconnect', () => {
+    console.log(`${socket.data.username} disconnected`);
+    socket.broadcast.emit('userLeft', { user: socket.data.username });
+  });
+});
+
+
