@@ -142,7 +142,7 @@ const newData = {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(newData) // Envía solo newData para actualizar
+      body: JSON.stringify(newData) 
     });
 
     if (respuesta.ok) {
@@ -203,3 +203,5 @@ fetch(`/users/delete/${userId}`, {
   res.status(500).send('Error eliminando usuario');
 });
 }
+
+
