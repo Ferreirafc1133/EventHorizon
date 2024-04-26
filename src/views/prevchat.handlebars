@@ -1,6 +1,6 @@
 
 <h1>Bienvenido al area de networking</h1>
-<div class="users-container">
+<div class="users-container" data-my-username="{{username}}">
     {{#each users}}
         <div class="card">
             <div class="card__img">
@@ -13,7 +13,7 @@
                 <p>Email: {{email}}</p>
             </div>
             <div class="card__wrapper">
-                <button class="card__btn" data-toggle="modal" data-target="#chatModal" data-fullname="{{fullname}}" data-username="{{username}}">Iniciar chat</button>
+                <button class="card__btn" data-toggle="modal" data-target="#chatModal" data-fullname="{{fullname}}">Iniciar chat</button>
             </div>
         </div>
     {{/each}}
@@ -37,19 +37,19 @@
           </div>
           <div class="chat-body p-3" style="max-height: 400px; overflow-y: auto;">
             <div class="message incoming">
-              <p>Hello, how can I assist you today?</p>
+              <p>Message</p>
             </div>
             <div class="message outgoing">
-              <p>I have a question about your services.</p>
+              <p>Message</p>
             </div>
             <div class="message incoming">
-              <p>Sure, I'm here to help. What would you like to know?</p>
+              <p>Message</p>
             </div>
           </div>
         <div class="chat-footer">
             <form id="message-form">
                 <input placeholder="Type your message" type="text" class="form-control">
-                <button type="submit" class="btn btn-primary">Send</button>
+                <button type="submit" class="btn btn-primary">Enviar</button>
             </form>
         </div>
         </div>

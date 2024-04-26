@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatButtons = document.querySelectorAll('.card__btn');
   
     let activeFullname;
-    let myUsername = document.body.getAttribute('data-username');
+    let myUsername = document.querySelector('.users-container').dataset.myUsername;
 
     chatButtons.forEach(function (btn) {
         btn.addEventListener('click', function () {
@@ -19,11 +19,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 socket.on('connect', () => {
                     console.log('Connected to server');
-                    socket.emit('newUser', { user: fullname });
+                    socket.emit('newUser', { user: myUsername });
                 });
         
                 socket.on('newMessage', (data) => {
-                    appendMessage(data.message, 'incoming', data.user);
+                    const sender = data.user === myUsername ? 'You' : data.user;
+                    appendMessage(data.message, 'incoming', sender);
                 });
         
                 socket.on('userLeft', (data) => {
