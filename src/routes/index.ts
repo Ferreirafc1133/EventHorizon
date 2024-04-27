@@ -116,7 +116,7 @@ router.get('/Login', (req: Request, res: Response) => {
  *       401:
  *         description: No autenticado. Usuario no ha proporcionado un token válido o no está logueado.
  */
-router.get('/Perfil', verificarToken, (req: Request, res: Response) => { //no sirve aun es un dummy
+/*router.get('/Perfil', verificarToken, (req: Request, res: Response) => { //no sirve aun es un dummy
   const isAdmin = res.locals.role === 'admin';
   res.render('profile', {
       title: 'Perfil',
@@ -166,6 +166,7 @@ router.get('/userChats', verificarToken, async (req: Request, res: Response) => 
   res.render('prevchat', {
     title: 'Networking',
     showNavbar: true,
+    customCss: "/public/styles/listusers.css",
     userLoggedIn: res.locals.userLoggedIn,
     users    
   })

@@ -123,6 +123,40 @@ async function updateUser(userId) {
   }
 }
 
+async function updateUser2(userId) {
+const newData = {
+    fullname: document.getElementById('edit-fullname').value,
+    username: document.getElementById('edit-username').value,
+    email: document.getElementById('edit-email').value,
+    role: document.getElementById('edit-role').value
+  };
+  const profilePictureInput = document.getElementById('edit-profilePicture');
+
+  try {
+    if (profilePictureInput.files.length > 0) {
+      await updateProfilePicture(userId);
+    }
+
+    const respuesta = await fetch(`/usuarios/actualizar/${userId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newData) 
+    });
+
+    if (respuesta.ok) {
+      window.location.href = `/miperfil`;
+    } else {
+      throw new Error('La respuesta de la red no fue correcta');
+    }
+  } catch (error) {
+    console.error('Error al actualizar el usuario:', error);
+    alert('Error al actualizar el usuario: ' + error.message);
+  }
+}
+
+
 function updateProfilePicture(userId) {
   const input = document.getElementById('edit-profilePicture');
   if (input.files.length === 0) {
@@ -169,3 +203,5 @@ fetch(`/users/delete/${userId}`, {
   res.status(500).send('Error eliminando usuario');
 });
 }
+
+
