@@ -43,6 +43,7 @@ export const establecerContextoAutenticacion = (req: Request, res: Response, nex
         try {
             const decoded = jwt.verify(token, process.env.JWT_SECRET) as DecodedToken; 
             console.log("Payload decodificado:", decoded); 
+            res.locals.userId = decoded.userId;
             res.locals.userLoggedIn = true;
             res.locals.username = decoded.username; 
             res.locals.role = decoded.userRole;
