@@ -16,7 +16,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 function asistirEvento(eventoId) {
-  const username = document.body.getAttribute('data-username');
+  //console.log(eventoId);
+  const user_container = document.getElementById("user_container");
+  //console.log(user_container);
+  const username = user_container.getAttribute("data-username");
   if (!username) {
       alert('No estás autenticado o no se ha proporcionado el nombre de usuario.');
       return;

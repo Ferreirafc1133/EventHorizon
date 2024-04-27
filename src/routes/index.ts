@@ -5,6 +5,8 @@ import { verificarToken, establecerContextoAutenticacion } from '../middlewares/
 import eventRoutes from './eventRut'; 
 import cookieParser  from 'cookie-parser';
 import User from '../models/userMod';
+import Evento from '../models/eventMod';
+import mongoose from 'mongoose';
 
 
 
@@ -37,16 +39,23 @@ router.use(adminRoutes);
  *             schema:
  *               type: string
  */
-router.get('/', (req: Request, res: Response) => {
+router.get('/', async (req: Request, res: Response) => {
   console.log('Datos de res.locals:', res.locals);
+  let events = '';
   const isAdmin = res.locals.role === 'admin';
+  if(res.locals.userLoggedIn){
+    const userId = res.locals.userId;
+    events = await Evento.find({ organizador: userId}).lean();
+    console.log(events);
+  }
   res.render('home', {
       title: 'Eventos en línea',
       customCss: '/public/styles/home.css',
       showNavbar: true,
       userLoggedIn: res.locals.userLoggedIn,
       is_Admin: isAdmin,
-      username: res.locals.username || 'Invitado'
+      username: res.locals.username || 'Invitado',
+      events
   });
 });
 
@@ -165,8 +174,8 @@ router.get('/userChats', verificarToken, async (req: Request, res: Response) => 
   const users = await User.find({}).lean();
   res.render('prevchat', {
     title: 'Networking',
+    customCss:"/public/styles/listusers.css",
     showNavbar: true,
-    customCss: "/public/styles/listusers.css",
     userLoggedIn: res.locals.userLoggedIn,
     users    
   })

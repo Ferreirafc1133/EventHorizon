@@ -74,6 +74,7 @@ const listarEventos = async (req: Request, res: Response) => {
             customCss: "/public/styles/events.css",
             showNavbar: true,
             is_Admin: isAdmin,
+            username: res.locals.username,
             eventos
         });
     } catch (err) {
