@@ -38,8 +38,8 @@ document.addEventListener('DOMContentLoaded', () => {
   
     $('#chatModal').on('hidden.bs.modal', function () {
         if (socket) {
-            socket.emit('disconnectRequest');
-            socket = null; 
+            socket.disconnect();
+            socket = null;
         }
     });
   
