@@ -54,3 +54,7 @@ esta la usas para ver el swagger:
 http://localhost:3000/api-docs/
 
 lo unico nuevo son todas las rutas de admin, y tienes que mover el .env para tener las credenciales de la api de google, y para probarlo tan facil como picarle al boton de google y listo, ademas de que te vallas a eventos los colores son aleatorios.
+
+# socket 
+
+para la implementacion de socket solo instala las librerias, que te falten json y entras a networking y en una session en incognito te metes en otra cuenta, y seleccionas las 2 cuentas entre si, y ya veras los mensajes.
