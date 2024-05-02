@@ -1,34 +1,36 @@
 <div id="background-image-container">
-        <img src="https://img.freepik.com/vector-gratis/efecto-luminoso-estadio-luminoso_23-2148366134.jpg" alt="Background" />
+    <img src="https://img.freepik.com/vector-gratis/efecto-luminoso-estadio-luminoso_23-2148366134.jpg" alt="Background" />
 </div>
-<h1>Bienvenido a la EventHorizon</h1>
-{{#if userLoggedIn}}
+<div class="container">
+    <h1>Bienvenido a la EventHorizon</h1>
+    {{#if userLoggedIn}}
+    <h2>Tus Eventos</h2>
+    <div class="event-list">
         {{#each events}}
-                <div class="eh-parent">
-                <div class="eh-card">
-                        <div class="eh-content-box">
-                        <span class="eh-card-title">{{titulo}}</span>
-                        <p class="eh-card-content">
-                                <strong>Descripción:</strong> {{descripcion}}<br>
-                        <!--    <strong>Fecha de inicio:</strong> {{fechaInicio}}<br>
-                                <strong>Fecha de fin:</strong> {{fechaFin}}  -->
-                        </p>
-                        <p class="organizador"><strong>Organizador:</strong> {{organizador}}</p>
-                        {{#if colaboradores.length}}
-                        <strong>Colaboradores:</strong>
-                        <ul>
-                                {{#each colaboradores}}
-                                <li>{{this}}</li>
-                                {{/each}}
-                        </ul>
-                        {{/if}}
-                        <button class="eh-see-more" onclick="asistirEvento('{{_id}}')">Inscribirse</button>
-                        </div>
-                        <div class="eh-date-box">
-                        <span class="eh-month">{{month fechaInicio}}</span>
-                        <span class="eh-date">{{day fechaInicio}}</span> 
-                        </div>
+        <div class="eh-parent">
+            <div class="eh-card">
+                <div class="eh-content-box">
+                    <span class="eh-card-title">{{titulo}}</span>
+                    <p class="eh-card-content">
+                        <strong>Descripción:</strong> {{descripcion}}<br>
+                    </p>
+                    {{#if colaboradores.length}}
+                    <strong>Colaboradores:</strong>
+                    <ul>
+                        {{#each colaboradores}}
+                        <li>{{this}}</li>
+                        {{/each}}
+                    </ul>
+                    {{/if}}
+                    <button class="eh-see-more" onclick="window.location.href='/edit/{{_id}}'">Editar</button>
                 </div>
+                <div class="eh-date-box">
+                    <span class="eh-month">{{month fechaInicio}}</span>
+                    <span class="eh-date">{{day fechaInicio}}</span> 
                 </div>
+            </div>
+        </div>
         {{/each}}
-{{/if}}
+    </div>
+    {{/if}}
+</div>

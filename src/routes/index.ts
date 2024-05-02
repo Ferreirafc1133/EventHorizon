@@ -181,6 +181,47 @@ router.get('/userChats', verificarToken, async (req: Request, res: Response) => 
   })
 })
 
+router.get('/foro', verificarToken, async (req: Request, res: Response) => {
+  const users = await User.find({}).lean();
+  res.render('foro', {
+    title: 'Foro',
+    customCss:"/public/styles/foro.css",
+    showNavbar: true,
+    userLoggedIn: res.locals.userLoggedIn,
+    userId: res.locals.userId,
+    users    
+  })
+})
+
+router.get('/edit/:id', async (req, res) => {
+  try {
+      const eventId = req.params.id;
+      const event = await Evento.findById(eventId).lean();
+      const users = await User.find({}).lean(); 
+
+      if (!event) {
+          res.status(404).send('Evento no encontrado');
+          return;
+      }
+      const eventForTemplate = {
+        ...event,
+        fechaInicio: event.fechaInicio ? event.fechaInicio.toISOString().split('T')[0] : '',
+        fechaFin: event.fechaFin ? event.fechaFin.toISOString().split('T')[0] : '',
+      };
+
+      res.render('event_edit', {
+          title: 'Editar Evento',
+          customCss: '/public/styles/evenedits.css',
+          showNavbar: true,
+          event: eventForTemplate,
+          users   
+      });
+  } catch (err) {
+      console.error('Error al obtener datos:', err);
+      res.status(500).send('Error interno del servidor');
+  }
+});
+
 
 
 export default router;

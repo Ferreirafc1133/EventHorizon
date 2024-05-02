@@ -7,7 +7,7 @@ interface IEvento extends mongoose.Document {
   fechaInicio: Date;
   fechaFin: Date;
   activo: boolean;
-  organizador: IUser['_id']; 
+  organizador: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   colaboradores: IUser['_id'][]; 
   asistentes: IUser['_id'][]; 
 }

@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import Evento from '../models/eventMod'; 
 import { ResponseStatus } from '../utils/response-status';
 import User from '../models/userMod'; 
+import mongoose from 'mongoose';
+
 
 const crearEvento = async (req: Request, res: Response) => {
     try {
@@ -89,9 +91,26 @@ const inscribirEvento = async (req: Request, res: Response) => {
 };
 
 const editarEvento = async (req: Request, res: Response) => {
-    const { id } = req.params;
-    res.send({ mensaje: `Evento con id ${id} editado. Implementar lógica de despues.` });
+    const { id } = req.params; 
+    const { titulo, descripcion, fechaInicio, fechaFin, activo, organizador, colaboradores, asistentes } = req.body;  
+
+    try {
+        const eventoActualizado = await Evento.findByIdAndUpdate(
+            id,
+            { titulo, descripcion, fechaInicio, fechaFin, activo, organizador, colaboradores, asistentes },
+            { new: true, runValidators: true }
+        );
+
+        if (!eventoActualizado) {
+            return res.status(404).json({ mensaje: 'Evento no encontrado.' });
+        }
+        res.redirect('/'); 
+    } catch (error) {
+        console.error('Error al actualizar el evento:', error);
+        res.status(500).json({ mensaje: 'Error al actualizar el evento', detalles: error.message });
+    }
 };
+
 
 const eliminarEvento = async (req: Request, res: Response) => {
     const { id } = req.params;

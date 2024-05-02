@@ -127,11 +127,11 @@
   }
   
   .incoming {
-    background-color: #e1e1e1;
+    background-color: #4afb50;
   }
   
   .outgoing {
-    background-color: #f2f2f2;
+    background-color: #4b93ff;
     text-align: right;
   }
   
