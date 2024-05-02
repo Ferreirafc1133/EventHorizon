@@ -85,10 +85,6 @@ const listarEventos = async (req: Request, res: Response) => {
     }
 };//nice
 
-const inscribirEvento = async (req: Request, res: Response) => {
-    const { id } = req.params;
-    res.send({ mensaje: `Inscrito en el evento con id ${id}. Implementar lógica despues.` });
-};
 
 const editarEvento = async (req: Request, res: Response) => {
     const { id } = req.params; 
@@ -154,20 +150,13 @@ const eliminarAsistente = async (req: Request, res: Response) => {
     res.send({ mensaje: `Asistente con id ${attendeeId} eliminado del evento con id ${id}. Implementar lógica.` });
 };
 
-const manejarRegistrosEvento = async (req: Request, res: Response) => {
-    const { id } = req.params; 
-    res.send({ mensaje: `Inscripciones para el evento con id ${id} recuperadas. Implementar lógica despues.` });
-};
-
 
 
 export {
     crearEvento,
     listarEventos,
-    inscribirEvento,
     editarEvento,
     eliminarEvento,
     asistirEvento,
-    eliminarAsistente,
-    manejarRegistrosEvento
+    eliminarAsistente
 };
