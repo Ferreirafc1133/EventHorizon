@@ -12,33 +12,6 @@ interface UserInterface {
     password: string;
 }
 
-const cambiarRolUsuario = async (req: Request, res: Response) => {
-    try {
-        const { userId, role } = req.body; 
-        if (!userId || !role) {
-            return res.status(400).json({ mensaje: 'Se requiere userId y role' });
-        }
-        const rolesPermitidos = ['user', 'admin', 'otroRol'];
-        if (!rolesPermitidos.includes(role)) {
-            return res.status(400).json({ mensaje: 'Rol no válido' });
-        }
-        const updatedUser = await User.findByIdAndUpdate(
-            userId,
-            { role: role },
-            { new: true, runValidators: true }
-        );
-        if (!updatedUser) {
-            return res.status(404).json({ mensaje: 'Usuario no encontrado' });
-        }
-
-        const { password, ...updatedUserInfo } = updatedUser.toObject();
-        res.status(200).json(updatedUserInfo);
-    } catch (err) {
-        console.error('Error al cambiar el rol del usuario:', err);
-        res.status(500).send('Error al cambiar el rol del usuario');
-    }
-};
-
 const getUsers = async (req: Request, res: Response) => {
     try{
         const users = await User.find({}).lean();
@@ -113,8 +86,7 @@ export {
     getUsers,
     getUserById,
     updateUserById,
-    deleteUserById,
-    cambiarRolUsuario
+    deleteUserById
 };
 
 

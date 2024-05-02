@@ -126,116 +126,32 @@ router.post('/login', loginUser);
  */
 router.get('/logout', verificarToken, logoutUser);
 
-/**
- * @swagger
- * /me:
- *  get:
- *   summary: Obtiene los datos del perfil del usuario
- *   tags: [Usuarios]
- *   security:
- *     - bearerAuth: []
- *   responses:
- *     200:
- *       description: Datos del perfil del usuario, excluyendo la contraseña.
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               _id:
- *                 type: string
- *                 description: ID único del usuario
- *               fullname:
- *                 type: string
- *                 description: Nombre completo del usuario
- *               username:
- *                 type: string
- *                 description: Nombre de usuario
- *               email:
- *                 type: string
- *                 format: email
- *                 description: Email del usuario
- *               description:
- *                 type: string
- *                 description: Descripción del perfil del usuario
- *               profilePicture:
- *                 type: string
- *                 description: URL de la imagen de perfil del usuario
- *               cvLink:
- *                 type: string
- *                 description: Enlace al CV del usuario
- *               interests:
- *                 type: array
- *                 items:
- *                   type: string
- *                 description: Lista de intereses del usuario
- *               role:
- *                 type: string
- *                 description: Rol del usuario en la plataforma
- *     404:
- *       description: Usuario no encontrado.
- *     500:
- *       description: Error al obtener el perfil del usuario.
- *   description: Devuelve la información del perfil del usuario basado en el token de autenticación proporcionado, excluyendo la contraseña.
- */
-router.get('/me', verificarToken, verPerfil);
+
+router.get('/me', verificarToken, verPerfil); //no sirve
 
 /**
  * @swagger
  * /miperfil:
  *   get:
- *     summary: Obtiene el ID del usuario y le puestra su informacion
- *    
+ *     summary: Muestra la página de perfil del usuario.
+ *     description: Devuelve la página del perfil del usuario, permitiendo al usuario visualizar y actualizar su información personal.
+ *     tags: [Usuarios]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Detalles del perfil del usuario
+ *         description: Página de perfil del usuario HTML cargada correctamente.
+ *         content:
+ *           text/html:
+ *             schema:
+ *               type: string
+ *       401:
+ *         description: Acceso no autorizado si el usuario no está autenticado.
  */
 router.get('/miperfil', verificarToken, getUserId);
 
-/**
- * @swagger
- * /edit:
- *  put:
- *   summary: Edita el perfil del usuario
- *   tags: [Usuarios]
- *   security:
- *     - bearerAuth: []
- *   requestBody:
- *     required: true
- *     content:
- *       application/json:
- *         schema:
- *           type: object
- *           properties:
- *             nombre:
- *               type: string
- *               description: El nuevo nombre del usuario.
- *             email:
- *               type: string
- *               format: email
- *               description: El nuevo correo electrónico del usuario.
- *             password:
- *               type: string
- *               format: password
- *               description: La nueva contraseña del usuario (opcional).
- *   responses:
- *     200:
- *       description: Perfil actualizado exitosamente.
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               mensaje:
- *                 type: string
- *                 example: Perfil actualizado exitosamente.
- *     400:
- *       description: Información proporcionada inválida o incompleta.
- *     401:
- *       description: No autorizado, token inválido o no proporcionado.
- *   description: Permite a los usuarios autenticados editar su perfil, incluyendo nombre, correo electrónico y contraseña.
- */
-router.put('/usuarios/actualizar/:userId', verificarToken, editarPerfil);
+
+router.put('/usuarios/actualizar/:userId', verificarToken, editarPerfil);//no sirve
 
 /**
  * @swagger
