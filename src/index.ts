@@ -11,8 +11,16 @@ import { registerHelpers } from './middlewares/handlebars.config';
 import socketIo from 'socket.io';
 import { createServer } from 'http';
 import { Server as SocketIOServer } from 'socket.io';
+import Handlebars from 'handlebars';
+import methodOverride from 'method-override';
+
+Handlebars.registerHelper('eq', function (a, b, options) {
+  return (a && b && a.toString() === b.toString()) ? "selected" : "";
+});
+
 
 registerHelpers();
+
 dotenv.config();
 
 const swaggerConfig = require('./../swagger.config.json');
@@ -34,6 +42,8 @@ app.use(
 app.use((req, res, next) => {
   next();
 });
+app.use(methodOverride('_method'));
+
 
 
 
@@ -75,23 +85,78 @@ httpServer.listen(PORT, () => {
 });
 
 io.on('connection', (socket) => {
-  console.log('A new user connected');
-
-  socket.on('newUser', (data) => {
-    socket.data.username = data.user;  
-    console.log(`${data.user} joined the chat`);
-    socket.broadcast.emit('newUser', data);
+  console.log('Nuevo usuario conectado');
+  
+  socket.on('joinRoom', ({ username, room }) => {
+    socket.join(room);
+    socket.data.username = username;
+    socket.data.room = room; 
+    console.log(`${username} joined the chat in room ${room}`);
+    socket.to(room).emit('userJoined', { user: username }); 
   });
 
-  socket.on('newMessage', (data) => {
-    console.log(`Message from ${socket.data.username}: ${data.message}`);
-    socket.broadcast.emit('newMessage', { user: socket.data.username, message: data.message });
+  socket.on('newPrivateUser', ({ user }: { user: string }) => {
+    socket.data.username = user;
+    console.log(`${user} se ha conectado al chat privado`);
+  });
+
+  socket.on('joinPrivateRoom', () => {
+    const privateRoomName = "privateChatRoom";
+    const room = io.sockets.adapter.rooms.get(privateRoomName);
+
+    console.log(`${socket.data.username} intentando unirse a la sala ${privateRoomName}`);
+
+    if (!room || room.size < 2) {
+        socket.join(privateRoomName);
+        socket.data.room = privateRoomName;
+        console.log(`${socket.data.username} se ha unido a ${privateRoomName}, total en sala: ${room ? room.size : 1}`);
+
+        if (room && room.size === 2) {
+            console.log(`La sala ${privateRoomName} ahora está llena.`);
+            io.to(privateRoomName).emit('privateRoomFull', privateRoomName);
+        }
+    } else {
+        console.log(`La sala ${privateRoomName} está llena. Usuario ${socket.data.username} rechazado.`);
+        socket.emit('privateRoomFull', "La sala está llena");
+    }
+  });
+
+  socket.on('sendPrivateMessage', ({ user, message }: { user: string, message: string }) => {
+    const roomName = socket.data.room; 
+
+    if (roomName) {
+        console.log(`Mensaje de ${user} en ${roomName}: ${message}`);
+        io.to(roomName).emit('privateMessageReceived', { user: user, message }); 
+    } else {
+        console.log(`Error: ${user} no está en ninguna sala al intentar enviar un mensaje en el chat privado`);
+    }
+  });
+
+  socket.on('newMessage', ({ room, message }) => {
+    if (socket.data.username) {
+      console.log(`Mensaje de ${socket.data.username} en el cuarto ${room}: ${message}`);
+      io.to(room).emit('newMessage', { user: socket.data.username, message });
+    }
   });
 
   socket.on('disconnect', () => {
-    console.log(`${socket.data.username} disconnected`);
-    socket.broadcast.emit('userLeft', { user: socket.data.username });
+    const username = socket.data.username;
+    const room = socket.data.room;
+    if (username && room) {
+      console.log(`${username} desconectado del cuarto ${room}`);
+      socket.to(room).emit('userLeft', { user: username });
+      socket.leave(room);
+    } else {
+      console.log('Usuario desconectado');
+    }
   });
+
+  socket.on('disconnectFromChat', () => {
+    if (socket.data.username && socket.data.room) {
+      console.log(`${socket.data.username} se ha desconectado del chat privado ${socket.data.room}`);
+      io.to(socket.data.room).emit('privateUserLeft', { user: socket.data.username });
+      socket.leave(socket.data.room);
+    }
+  });
+  
 });
-
-
