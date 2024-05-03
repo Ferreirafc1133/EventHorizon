@@ -206,5 +206,9 @@ fetch(`/users/delete/${userId}`, {
   res.status(500).send('Error eliminando usuario');
 });
 }
+function toggleModal(show) {
+  const modal = document.getElementById('createProjectModal');
+  modal.style.display = show ? 'block' : 'none';
+}
 
 
