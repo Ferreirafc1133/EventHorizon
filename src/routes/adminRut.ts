@@ -1,5 +1,5 @@
 import express from 'express';
-import { getUsers, getUserById, updateUserById, deleteUserById, cambiarRolUsuario } from '../controllers/adminCont'; 
+import { getUsers, getUserById, updateUserById, deleteUserById } from '../controllers/adminCont'; 
 import { verificarToken, esAdmin } from '../middlewares/authMid'; 
 
 
@@ -70,35 +70,6 @@ router.get('/users/:id', verificarToken, esAdmin, getUserById);
  *         description: Usuario actualizado
  */
 router.put('/users/update/:id', verificarToken, esAdmin, updateUserById);
-
-/**
- * @swagger
- * /users/{id}/roles:
- *   put:
- *     summary: Cambia el rol de un usuario
- *     tags: [Admin]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: El ID del usuario
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               role:
- *                 type: string
- *                 description: El nuevo rol del usuario
- *     responses:
- *       200:
- *         description: Rol de usuario cambiado
- */
-router.put('/users/:id/roles', verificarToken, esAdmin, cambiarRolUsuario);
 
 /**
  * @swagger

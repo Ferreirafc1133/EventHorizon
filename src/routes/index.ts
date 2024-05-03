@@ -170,6 +170,27 @@ router.get('/Perfil/Editar', verificarToken, (req: Request, res: Response) => { 
   });
 });*/
 
+/**
+ * @swagger
+ * /userChats:
+ *   get:
+ *     summary: Muestra la página con la lista de usuarios para chats.
+ *     description: Devuelve una página HTML con una lista de todos los usuarios registrados, permitiendo iniciar chats privados.
+ *     tags: [Chats]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Página HTML con la lista de usuarios disponibles para chat.
+ *         content:
+ *           text/html:
+ *             schema:
+ *               type: string
+ *       401:
+ *         description: Acceso no autorizado, token no proporcionado o inválido.
+ *       500:
+ *         description: Error del servidor al intentar recuperar la lista de usuarios.
+ */
 router.get('/userChats', verificarToken, async (req: Request, res: Response) => {
   const users = await User.find({}).lean();
   res.render('prevchat', {
@@ -180,6 +201,92 @@ router.get('/userChats', verificarToken, async (req: Request, res: Response) => 
     users    
   })
 })
+
+/**
+ * @swagger
+ * /foro:
+ *   get:
+ *     summary: Muestra la página del foro.
+ *     description: Devuelve la página del foro HTML, permitiendo a los usuarios visualizar y participar en discusiones del foro.
+ *     tags: [Chats]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Página del foro HTML cargada correctamente.
+ *         content:
+ *           text/html:
+ *             schema:
+ *               type: string
+ *       401:
+ *         description: Acceso no autorizado si el usuario no está autenticado.
+ */
+router.get('/foro', verificarToken, async (req: Request, res: Response) => {
+  const users = await User.find({}).lean();
+  res.render('foro', {
+    title: 'Foro',
+    customCss:"/public/styles/foro.css",
+    showNavbar: true,
+    userLoggedIn: res.locals.userLoggedIn,
+    userId: res.locals.userId,
+    users    
+  })
+})
+
+/**
+ * @swagger
+ * /edit/{id}:
+ *   get:
+ *     summary: Muestra la página de edición para un evento específico.
+ *     description: Devuelve la página de edición de eventos HTML, permitiendo a los administradores modificar la información de un evento existente.
+ *     tags: [Chats]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID único del evento que se va a editar.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Página de edición de eventos HTML cargada correctamente con datos del evento a editar.
+ *         content:
+ *           text/html:
+ *             schema:
+ *               type: string
+ *       404:
+ *         description: No se encontró el evento solicitado.
+ *       500:
+ *         description: Error interno del servidor.
+ */
+router.get('/edit/:id', async (req, res) => {
+  try {
+      const eventId = req.params.id;
+      const event = await Evento.findById(eventId).lean();
+      const users = await User.find({}).lean(); 
+
+      if (!event) {
+          res.status(404).send('Evento no encontrado');
+          return;
+      }
+      const eventForTemplate = {
+        ...event,
+        fechaInicio: event.fechaInicio ? event.fechaInicio.toISOString().split('T')[0] : '',
+        fechaFin: event.fechaFin ? event.fechaFin.toISOString().split('T')[0] : '',
+      };
+
+      res.render('event_edit', {
+          title: 'Editar Evento',
+          customCss: '/public/styles/evenedits.css',
+          showNavbar: true,
+          event: eventForTemplate,
+          users   
+      });
+  } catch (err) {
+      console.error('Error al obtener datos:', err);
+      res.status(500).send('Error interno del servidor');
+  }
+});
 
 
 
