@@ -109,8 +109,14 @@ const editarEvento = async (req: Request, res: Response) => {
 
 
 const eliminarEvento = async (req: Request, res: Response) => {
-    const { id } = req.params;
-    res.send({ mensaje: `Evento con id ${id} eliminado. Implementar lógica despues.` });
+    try {
+        const eventId = req.params.id;
+        await Evento.deleteOne({ _id: eventId });
+        res.status(200).send("Evento eliminado exitosamente");
+    } catch (error) {
+        console.error('Error deleting event:', error);
+        res.status(500).send('Error eliminando evento');
+    }
 };
 
 
