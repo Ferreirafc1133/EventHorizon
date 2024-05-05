@@ -187,20 +187,41 @@ function updateProfilePicture(userId) {
 
 
 function deleteUser(userId) {
-fetch(`/users/delete/${userId}`, {
-  method: 'DELETE'
-})
-.then(response => {
-  if (response.ok) {
-      window.location.href = `/usersLists`;
-  } else {
-      throw new Error('Network response was not ok');
+  if(confirm("¿Está seguro de que quiere eliminar este usuario?")) {
+    fetch(`/users/delete/${userId}`, {
+      method: 'DELETE'
+    })
+    .then(response => {
+      if (response.ok) {
+          window.location.href = `/usersLists`;
+      } else {
+          throw new Error('Network response was not ok');
+      }
+    })
+    .catch(error => {
+      console.error('Error deleting user:', error);
+      res.status(500).send('Error eliminando usuario');
+    });
   }
-})
-.catch(error => {
-  console.error('Error deleting user:', error);
-  res.status(500).send('Error eliminando usuario');
-});
+}
+
+function deleteEvent(eventId){
+  if(confirm("¿Está seguro de que quiere eliminar este evento?")) {
+    fetch(`/eventos/${eventId}`, {
+      method: 'DELETE'
+    })
+    .then(response => {
+      if (response.ok) {
+          window.location.href = `/`;
+      } else {
+          throw new Error('Network response was not ok');
+      }
+    })
+    .catch(error => {
+      console.error('Error deleting event:', error);
+      res.status(500).send('Error eliminando evento');
+    });
+  }
 }
 function toggleModal(show) {
   const modal = document.getElementById('createProjectModal');
