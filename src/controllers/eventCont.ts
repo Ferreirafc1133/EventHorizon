@@ -8,7 +8,15 @@ import mongoose from 'mongoose';
 const crearEvento = async (req: Request, res: Response) => {
     try {
         const { titulo, descripcion, fechaInicio, fechaFin, activo, organizador, colaboradores } = req.body;
-
+        console.log("Datos recibidos para nuevo evento:", {
+            titulo,
+            descripcion,
+            fechaInicio,
+            fechaFin,
+            activo,
+            organizador,
+            colaboradores
+        });
         const nuevoEvento = new Evento({
             titulo,
             descripcion,
@@ -18,12 +26,12 @@ const crearEvento = async (req: Request, res: Response) => {
             organizador,
             colaboradores
         });
-
         await nuevoEvento.save();
-        res.status(ResponseStatus.CREATED).json(nuevoEvento);
+        req.flash('success_msg', 'Evento creado exitosamente!');
+        res.redirect('/');
     } catch (err) {
-        console.error('Error al crear el evento:', err);
-        res.status(ResponseStatus.INTERNAL_SERVER_ERROR).send('Error al crear el evento');
+        req.flash('error_msg', 'Error al crear el evento.');
+        res.redirect('/');
     }
 }; //nice
 

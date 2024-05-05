@@ -11,12 +11,13 @@
                 <!--    <strong>Fecha de inicio:</strong> {{fechaInicio}}<br>
                         <strong>Fecha de fin:</strong> {{fechaFin}}  -->
                     </p>
-                    <p class="organizador"><strong>Organizador:</strong> {{organizador}}</p>
+                    <h4 class="organizador">Organizador:</h4>
+                    <span class="organizador-name">{{organizador}}</span>
                     {{#if colaboradores.length}}
-                    <strong>Colaboradores:</strong>
+                    <h4>Colaboradores:</h4>
                     <ul>
                         {{#each colaboradores}}
-                        <li>{{this}}</li>
+                        <li class="colaborador-name">{{this}}</li>
                         {{/each}}
                     </ul>
                     {{/if}}

@@ -45,7 +45,7 @@
 
 .eh-content-box .eh-card-title {
   display: inline-block;
-  color: rgb(0, 0, 0);
+  color: rgb(255, 255, 255);
   font-size: 25px;
   font-weight: 900;
   transition: all 0.5s ease-in-out;
@@ -131,4 +131,15 @@
 
 .eh-card-content ul li {
   margin-bottom: 5px; 
+}
+
+.organizador-name {
+  color: #ffffff; 
+}
+
+.colaborador-name {
+  color: #ffffff; 
+}
+h4{
+  color: #ffffff;
 }

@@ -13,6 +13,8 @@ import { createServer } from 'http';
 import { Server as SocketIOServer } from 'socket.io';
 import Handlebars from 'handlebars';
 import methodOverride from 'method-override';
+import flash from 'connect-flash';
+
 
 Handlebars.registerHelper('eq', function (a, b, options) {
   return (a && b && a.toString() === b.toString()) ? "selected" : "";
@@ -32,14 +34,17 @@ const app: Application = express();
 app.use(
   session({
     secret: process.env.SECRET_KEY, 
-    resave: false,
-    saveUninitialized: false,
+    resave: true,
+    saveUninitialized: true,
     cookie: { 
       secure: process.env.NODE_ENV === 'production' 
     }, 
   })
 );
+app.use(flash());
 app.use((req, res, next) => {
+  res.locals.success_msg = req.flash('success_msg');
+  res.locals.error_msg = req.flash('error_msg');
   next();
 });
 app.use(methodOverride('_method'));
