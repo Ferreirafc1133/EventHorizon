@@ -7,7 +7,7 @@ import cookieParser  from 'cookie-parser';
 import User from '../models/userMod';
 import Evento from '../models/eventMod';
 import mongoose from 'mongoose';
-
+import { ObjectId } from 'mongodb';
 
 
 declare module 'express-session' {
@@ -16,6 +16,7 @@ declare module 'express-session' {
     username?: string;
   }
 }
+
 
 const router = express.Router();
 router.use(cookieParser());
@@ -41,13 +42,40 @@ router.use(adminRoutes);
  */
 router.get('/', async (req: Request, res: Response) => {
   console.log('Datos de res.locals:', res.locals);
-  let events = '';
   const isAdmin = res.locals.role === 'admin';
+  const users = await User.find({}).lean();
+  let eventos = [];
+
   if(res.locals.userLoggedIn){
-    const userId = res.locals.userId;
-    events = await Evento.find({ organizador: userId}).lean();
-    console.log(events);
+    const userId = res.locals.userId; 
+
+    eventos = await Evento.aggregate([
+      { $match: { organizador: new ObjectId(userId) } }, 
+      {
+        $lookup: {
+          from: "users",
+          let: { colaboradorIds: "$colaboradores" },
+          pipeline: [
+            { $match: { $expr: { $in: ["$_id", { $map: { input: "$$colaboradorIds", as: "colaboradorId", in: { $toObjectId: "$$colaboradorId" } } }] } } }
+          ],
+          as: "infoColaboradores"
+        }
+      },
+      {
+        $project: {
+          _id: 1,
+          titulo: 1,
+          descripcion: 1,
+          fechaInicio: 1,
+          fechaFin: 1,
+          activo: 1,
+          organizador: 1,
+          colaboradores: "$infoColaboradores.fullname"
+        }
+      }
+    ]);
   }
+
   res.render('home', {
       title: 'Eventos en línea',
       customCss: '/public/styles/home.css',
@@ -55,9 +83,11 @@ router.get('/', async (req: Request, res: Response) => {
       userLoggedIn: res.locals.userLoggedIn,
       is_Admin: isAdmin,
       username: res.locals.username || 'Invitado',
-      events
+      events: eventos,
+      users
   });
 });
+
 
 /**
  * @swagger
