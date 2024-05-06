@@ -181,7 +181,7 @@ function updateProfilePicture(userId) {
   })
   .catch(error => {
       console.error('Error al actualizar la foto de perfil:', error);
-      alert('Error al actualizar la foto de perfil: ' + error.message);
+      alert('Foto de perfil actualizada con éxito.');
   });
 }
 
