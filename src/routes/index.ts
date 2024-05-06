@@ -225,7 +225,7 @@ router.get('/userChats', verificarToken, async (req: Request, res: Response) => 
   const users = await User.find({}).lean();
   res.render('prevchat', {
     title: 'Networking',
-    customCss:"/public/styles/listusers.css",
+    customCss:"'/public/styles/listusers.css",
     showNavbar: true,
     userLoggedIn: res.locals.userLoggedIn,
     users    
