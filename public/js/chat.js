@@ -87,3 +87,20 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(`Message appended: ${message} as ${type}`);
     }
 });
+
+
+document.getElementById('userInputField').addEventListener('input', filterUsers);
+
+function filterUsers() {
+    var searchValue = document.getElementById('userInputField').value.toLowerCase();
+    var userCards = document.querySelectorAll('.card');
+
+    userCards.forEach(card => {
+        var fullName = card.querySelector('.card__title').textContent.toLowerCase();
+        if (fullName.includes(searchValue)) {
+            card.style.display = ''; 
+        } else {
+            card.style.display = 'none'; 
+        }
+    });
+}

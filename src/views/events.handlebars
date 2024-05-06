@@ -1,5 +1,10 @@
 <div class="container" id="user_container" data-username="{{username}}">
-    <h1>Listado de Eventos</h1>
+    <h1>Listado de Eventos</h1><br>
+    <div class="coolinput">
+        <label for="inputField" class="text">Eventos:</label>
+        <input type="text" placeholder="Metele papi..." name="input" id="inputField" class="input">
+    </div>
+    <br><br>
     <div class="event-list">
         {{#each eventos}}
         <div class="eh-parent">
