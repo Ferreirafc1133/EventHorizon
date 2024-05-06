@@ -229,3 +229,19 @@ function toggleModal(show) {
 }
 
 
+
+document.getElementById('inputField').addEventListener('input', filterEvents);
+
+function filterEvents() {
+    var searchValue = document.getElementById('inputField').value.toLowerCase();
+    var eventCards = document.querySelectorAll('.eh-parent');
+
+    eventCards.forEach(card => {
+        var title = card.querySelector('.eh-card-title').textContent.toLowerCase();
+        if (title.includes(searchValue)) {
+            card.style.display = ''; 
+        } else {
+            card.style.display = 'none'; 
+        }
+    });
+}
