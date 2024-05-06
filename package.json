@@ -4,7 +4,7 @@
   "description": "App de reuniones y conferencias",
   "main": "index.js",
   "scripts": {
-    "start": "node dist/src/index.js",
+    "start": "node dist/src",
     "local": "ts-node index.ts",
     "dev": "nodemon src/index.ts",
     "build": "rimraf dist && tsc && ncp src/views dist/src/views && ncp src/views/layouts dist/src/views/layouts"
