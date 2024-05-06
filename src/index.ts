@@ -16,6 +16,7 @@ import methodOverride from 'method-override';
 import flash from 'connect-flash';
 
 
+
 Handlebars.registerHelper('eq', function (a, b, options) {
   return (a && b && a.toString() === b.toString()) ? "selected" : "";
 });
