@@ -16,6 +16,7 @@ import methodOverride from 'method-override';
 import flash from 'connect-flash';
 
 
+
 Handlebars.registerHelper('eq', function (a, b, options) {
   return (a && b && a.toString() === b.toString()) ? "selected" : "";
 });
@@ -68,7 +69,17 @@ app.set('view engine', 'handlebars');
 app.set('views', path.join(__dirname, 'views'));
 
 // Servir archivos estáticos
-app.use('/public', express.static(path.join(__dirname, '../public')));
+app.use('/public', express.static(path.join(__dirname, '../../public')));
+
+console.log("Path to layouts:", path.join(__dirname, 'views/layouts'));
+console.log("Path to views:", path.join(__dirname, '../views'));
+console.log("Actual __dirname:", __dirname);
+console.log("Ruta completa de las vistas:", app.get('views'));
+console.log("Serving static files from: ", path.join(__dirname, '../../public'));
+
+
+
+
 
 // Swagger UI
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocs));
