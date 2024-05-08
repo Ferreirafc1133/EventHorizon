@@ -7,7 +7,8 @@
     "start": "node dist/src",
     "local": "ts-node index.ts",
     "dev": "nodemon src/index.ts",
-    "build": "rimraf dist && tsc && ncp src/views dist/src/views && ncp src/views/layouts dist/src/views/layouts"
+    "build": "rimraf dist && tsc && ncp src/views dist/src/views && ncp src/views/layouts dist/src/views/layouts",
+    "postinstall": "npm run build"
   },
   "author": "Equipo aztro",
   "license": "ISC",
@@ -54,6 +55,6 @@
     "nodemon": "^3.1.0",
     "rimraf": "^5.0.5",
     "ts-node": "^10.9.2",
-    "typescript": "^5.4.4"
+    "typescript": "^5.4.5"
   }
 }
