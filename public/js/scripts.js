@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
   const colors = [
-    '#0D586C', '#85B200', '#019FE0'
+    '#0093CB', '#85B200', '#00395B'
   ];  
   const cards = document.querySelectorAll('.eh-parent');
 

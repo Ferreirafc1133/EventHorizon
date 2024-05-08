@@ -4,6 +4,7 @@
   padding: 20px;
 }
 
+
 .event-list {
   display: flex;
   flex-wrap: wrap;
@@ -21,14 +22,18 @@
   padding-top: 50px;
   border: 3px solid rgb(255, 255, 255);
   transform-style: preserve-3d;
-  background: linear-gradient(135deg,#0000 18.75%,#f3f3f3 0 31.25%,#0000 0),
+  /* background: linear-gradient(135deg,#0000 18.75%,#f3f3f3 0 31.25%,#0000 0),
       repeating-linear-gradient(45deg,#f3f3f3 -6.25% 6.25%,#ffffff 0 18.75%);
   background-size: 60px 60px;
-  background-position: 0 0, 0 0;
-  background-color: #f0f0f0;
+  background-position: 0 0, 0 0; */
+  /* background-color: #f0f0f0; */
   width: 100%;
   box-shadow: rgba(142, 142, 142, 0.3) 0px 30px 30px -10px;
   transition: all 0.5s ease-in-out;
+  background-image: url('/public/img/hojas.png');
+  background-size: cover; 
+  background-position: center; 
+  background-repeat: no-repeat; 
 }
 
 .eh-card:hover {
@@ -94,7 +99,7 @@
   height: 60px;
   width: 60px;
   background: white;
-  border: 1px solid rgb(7, 185, 255);
+  border: 1px solid #85B200;
   padding: 10px;
   transform: translate3d(0px, 0px, 80px);
   box-shadow: rgba(100, 100, 111, 0.2) 0px 17px 10px -10px;
@@ -106,7 +111,7 @@
 }
 
 .eh-date-box .eh-month {
-  color: rgb(4, 193, 250);
+  color: #85B200;
   font-size: 9px;
   font-weight: 700;
 }
@@ -114,7 +119,7 @@
 .eh-date-box .eh-date {
   font-size: 20px;
   font-weight: 900;
-  color: rgb(4, 193, 250);
+  color: #85B200;
 }
 .eh-card-content strong {
   display: block; 
