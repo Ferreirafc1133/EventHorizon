@@ -1,8 +1,9 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark w-100">
-  <a class="navbar-brand" href="/">
-    <img src="public\img\Logo.png" alt="Logo" style="height:30px; margin-right:10px;">
-    EventHorizon
+<nav class="navbar navbar-expand-lg custom-navbar w-100">
+  <div class="logo">
+    <a class="navbar-brand" href="/">
+      <img src="/public/img/logoRecIteso.png" alt="Logo" class="navbar-logo">
   </a>
+  </div>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -10,35 +11,48 @@
     <ul class="navbar-nav ml-auto">
       {{#if userLoggedIn}}
         <li class="nav-item">
-          <span class="navbar-text">
-            Bienvenido, {{username}}
-          </span>
+          <span class="navbar-text">Bienvenido, {{username}}</span>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/miperfil">Mi perfil</a>
-        </li>
+        <li class="nav-item"><a class="nav-link" href="/miperfil">Mi perfil</a></li>
         {{#if is_Admin}}
-          <li class="nav-item">
-            <a class="nav-link" href="/usersLists">Usuarios</a>
-          </li>
+          <li class="nav-item"><a class="nav-link" href="/usersLists">Usuarios</a></li>
         {{/if}}
-        <li class="nav-item">
-          <a class="nav-link" href="/eventos">Eventos</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/userChats">Networking</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/foro">Foro</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/logout" onclick="logout()">Cerrar sesión</a>
-        </li>
+        <li class="nav-item"><a class="nav-link" href="/eventos">Eventos</a></li>
+        <li class="nav-item"><a class="nav-link" href="/userChats">Networking</a></li>
+        <li class="nav-item"><a class="nav-link" href="/foro">Foro</a></li>
+        <li class="nav-item"><a class="nav-link" href="/logout" onclick="logout()">Cerrar sesión</a></li>
       {{else}}
-        <li class="nav-item">
-          <a class="nav-link" href="/login">Iniciar sesión</a>
-        </li>
+        <li class="nav-item"><a class="nav-link" href="/login">Iniciar sesión</a></li>
       {{/if}}
     </ul>
   </div>
 </nav>
+
+<style>
+.custom-navbar {
+  background-color: #85B200; 
+}
+
+.navbar-logo {
+  height: 50px; 
+  margin-left: 50px;
+}
+.logo{
+  background-color: #fff;
+  height: 50px;
+  
+}
+.navbar-nav .nav-link {
+  color: #000000; 
+}
+
+.navbar-nav .nav-link:hover {
+  color: #7d04ff; 
+}
+
+.navbar-text {
+  color: #000000; 
+}
+
+
+</style>

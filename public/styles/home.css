@@ -371,3 +371,37 @@ h2{
 h4{
   color: #ffffff;
 }
+
+.carousel-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  column-gap: 0px; 
+}
+
+.negro {
+  background-color: #000000;
+  width: 100px;
+  height: 300px; 
+}
+
+.carousel {
+  width: 800px; 
+  height: 300px;
+  overflow: hidden;
+  position: relative;
+}
+
+.carousel-item img {
+  width: 800px; 
+  height: 300px;
+  object-fit: fill;
+}
+
+h1{
+  color: #ffffff;
+}
+
+h2{
+  color: #ffffff;
+}

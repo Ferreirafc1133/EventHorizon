@@ -6,7 +6,9 @@ body {
     justify-content: center;
     align-items: center;
 }
-
+.custom-navbar {
+    background-color: #85B200; 
+  }
 
 
 h1{
