@@ -4,7 +4,7 @@ import User from '../models/userMod';
 import { ResponseStatus } from '../utils/response-status';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
-
+import { logger } from '../utils/logger';
 
 
 interface UserInterface {
@@ -44,41 +44,44 @@ const registerUser = async (req: Request, res: Response) => {
 };
 
 
+
 const loginUser = async (req: Request, res: Response) => {
-    try {
-        const { username, password } = req.body;
+  try {
+    const { username, password } = req.body;
+    logger.info(`Inicio de sesión recibido para usuario: ${username}`);
 
-        console.log(`Inicio de sesión: ${username}`);
+    const user = await User.findOne({ username });
 
-        let user = await User.findOne({ username });
-        if (!user) {
-            console.log(`El usuario ${username} no existe.`);
-            return res.status(400).json({ message: 'El usuario no existe' });
-        }
-
-        console.log(`Usuario ${username} encontrado. Comparando contraseña...`);
-
-        const isMatch = await bcrypt.compare(password, user.password);
-
-        if (!isMatch) {
-            console.log(`Contraseña incorrecta para el usuario: ${username}`);
-            return res.status(400).json({ message: 'Contraseña incorrecta' });
-        }
-
-        const token = jwt.sign(
-            { userId: user._id, username: user.username, userRole: user.role }, 
-            process.env.JWT_SECRET,
-            { expiresIn: '1h' }
-        );
-
-        console.log(`Usuario ${username} autenticado exitosamente con token.`);
-        res.cookie('token', token, { httpOnly: true, secure: true });
-        res.redirect('/');
-    } catch (error) {
-        console.error('Error durante el inicio de sesión:', error);
-        res.status(500).send('Error del servidor');
+    if (!user) {
+      logger.warn(`Login fallido - Usuario no encontrado: ${username}`);
+      return res.status(400).json({ message: 'El usuario no existe' });
     }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      logger.warn(`Login fallido - Contraseña incorrecta para: ${username}`);
+      return res.status(400).json({ message: 'Contraseña incorrecta' });
+    }
+
+    const token = jwt.sign(
+      { userId: user._id, username: user.username, userRole: user.role },
+      process.env.JWT_SECRET!,
+      { expiresIn: '1h' }
+    );
+
+    logger.info(`Login exitoso para: ${username}`);
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+    });
+
+    res.redirect('/');
+  } catch (error) {
+    logger.error(`Error durante el inicio de sesión: ${error}`);
+    res.status(500).send('Error del servidor');
+  }
 };
+
 
 
 /*
