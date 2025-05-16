@@ -14,7 +14,7 @@ import { Server as SocketIOServer } from 'socket.io';
 import Handlebars from 'handlebars';
 import methodOverride from 'method-override';
 import flash from 'connect-flash';
-import { logger } from './utils/logger';
+
 
 
 Handlebars.registerHelper('eq', function (a, b, options) {
@@ -30,7 +30,7 @@ const swaggerConfig = require('./../swagger.config.json');
 const swaggerDocs = swaggerJsDoc(swaggerConfig);
 
 const app: Application = express();
-app.disable('x-powered-by');
+
 
 app.use(
   session({
@@ -95,13 +95,6 @@ const PORT = process.env.PORT || 3000;
 
 const httpServer = createServer(app);
 const io = new SocketIOServer(httpServer);
-
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  logger.error(`Error no capturado: ${err.stack || err.message}`);
-  res.status(500).json({
-    message: 'Ocurrió un error interno. Contacta al administrador.'
-  });
-});
 
 httpServer.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
