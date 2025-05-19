@@ -1,0 +1,49 @@
+stages:
+  - build
+  - test
+  - scan
+  - dast
+
+build:
+  stage: build
+  script:
+    - echo "Build your app aquí"
+  tags:
+    - docker
+
+sonarqube-check:
+  stage: scan
+  image: sonarsource/sonar-scanner-cli:latest
+  script:
+    - sonar-scanner
+  only:
+    - main
+
+include:
+  - template: Security/Secret-Detection.gitlab-ci.yml
+
+sbom:
+  stage: scan
+  artifacts:
+    reports:
+      cyclonedx: gl-sbom.cdx.json
+  script:
+    - curl -sSL https://cyclonedx.github.io/cyclonedx-cli/cyclonedx-linux-x64 -o cyclonedx
+    - chmod +x cyclonedx
+    - ./cyclonedx --output-format json --output-file gl-sbom.cdx.json
+  only:
+    - main
+
+dast:
+  stage: dast
+  image: docker:latest
+  services:
+    - docker:dind
+  variables:
+    DAST_WEBSITE: "https://tu-app-en-staging.com"
+  script: []
+  artifacts:
+    reports:
+      dast: gl-dast-report.json
+  only:
+    - main
