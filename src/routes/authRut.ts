@@ -2,6 +2,9 @@ import express from 'express';
 import { loginUser, registerUser, logoutUser, editarPerfil, eliminarUsuario, verPerfil, actualizarPP,getUserId} from '../controllers/authCont'; 
 import { verificarToken, esAdmin } from '../middlewares/authMid'; 
 import { uploadS3Middleware } from '../middlewares/userMid';
+import { loginRateLimiter } from '../middlewares/rateLimiter';
+import { validarLogin, validarRegistro } from '../middlewares/validators';
+import { manejarErroresDeValidacion } from '../middlewares/validarErrores';
 import swaggerJsDoc from 'swagger-jsdoc';
 import swaggerUI from 'swagger-ui-express';
 import swaggerConfig from './../../swagger.config.json';
@@ -67,7 +70,8 @@ router.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocs));
  *       description: El usuario ya existe.
  *   description: Permite registrar un nuevo usuario en el sistema.
  */
-router.post('/register', registerUser);
+router.post('/register', validarRegistro, manejarErroresDeValidacion, registerUser);
+
 
 /**
  * @swagger
@@ -107,7 +111,7 @@ router.post('/register', registerUser);
  *       description: Credenciales no válidas.
  *   description: Permite a los usuarios iniciar sesión y obtener un token de acceso.
  */
-router.post('/login', loginUser);
+router.post('/login', loginRateLimiter, validarLogin, manejarErroresDeValidacion, loginUser);
 
 /**
  * @swagger
